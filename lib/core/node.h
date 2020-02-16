@@ -7,28 +7,35 @@
 #ifndef SAYDX_NODE_H
 #define SAYDX_NODE_H
 
+#include "saydx.h"
+
 #include "commontypes.h"
 #include "array.h"
 
-struct node_t;
 
 typedef struct {
     int size;
     int allocsize;
-    struct node_t **items;
+    struct _node_t **items;
 } node_list_t;
 
 
-typedef struct node_t {
+typedef struct _node_t {
     char *name;
     attributes_t *attributes;
     array_t *array;
-    struct node_t *parent;
+    struct _node_t *parent;
     node_list_t *children;
-} node_t;
+} _node_t;
+
+
+
+//
+// node_t and node_list_t defined in library header file
+//
 
 void node_init(node_t *this, const char *name, int nodetype, attributes_t *attributes);
-void node_final(node_t *this);
+// node_final() defined library header file
 void node_append_child(node_t *this, node_t *child);
 
 void node_list_init(node_list_t *this, int initsize);

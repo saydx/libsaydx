@@ -52,6 +52,11 @@ void node_final(node_t *this)
     }
 }
 
+char * node_get_name(node_t *this)
+{
+    return this->name;
+}
+
 
 void node_append_child(node_t *this, node_t *child)
 {

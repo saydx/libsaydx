@@ -8,6 +8,7 @@
 #include <string.h>
 #include "array.h"
 
+
 array_t * array_create(const line_t *line)
 {
     array_t *this;
@@ -97,7 +98,7 @@ int array_size(array_t *this)
 
 
 
-void _get_values(array_t *this, int *rank, int **shape, void **data, int compat) {
+void _get_values(array_t *this, int *rank, int **shape, void **data, bool compat) {
     if (compat) {
         *rank = this->rank;
         *shape = this->shape;
@@ -112,6 +113,9 @@ void _get_values(array_t *this, int *rank, int **shape, void **data, int compat)
 
 void array_as_i4(array_t *this, int *rank, int **shape, int **dataptr)
 {
-    int compat = strcmp(this->typename, "i8");
-    _get_values(this, rank, shape, dataptr, compat);
+    void *rawdataptr;
+
+    bool compat = !strcmp(this->typename, "i4");
+    _get_values(this, rank, shape, &rawdataptr, compat);
+    *dataptr = rawdataptr;
 }

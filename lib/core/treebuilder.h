@@ -32,6 +32,7 @@ error_t * treebuilder_receive_array(void *handler, array_t *array);
 
 void treebuilder_init(treebuilder_t *this);
 void treebuilder_final(treebuilder_t *this);
+void treebuilder_transfer_tree(treebuilder_t *this, node_t **target);
 
 
 #endif

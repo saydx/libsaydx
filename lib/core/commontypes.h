@@ -8,7 +8,7 @@
 #define SAYDX_COMMONTYPES_H
 
 #include <stdio.h>
-
+#include "saydx.h"
 
 void *malloc_or_die(size_t allocsize, char *file, int line);
 void *realloc_or_die(void *ptr, size_t allocsize, char *file, int line);
@@ -54,25 +54,22 @@ typedef struct traceback_s {
     struct traceback_s *next;
 } traceback_t;
 
+
 traceback_t * traceback_create(const char *file, int line);
 traceback_t * traceback_add(traceback_t *traceback, const char *file, int line);
 void traceback_write(traceback_t *traceback, FILE *file);
 void traceback_destroy(traceback_t *traceback);
 
 
-//
-// error_t
-//
-
-typedef struct {
+typedef struct _error_t {
     traceback_t *traceback;
     traceback_t *lasttrace;
     char *message;
-} error_t;
+} _error_t;
 
 error_t * error_create(const char *message, const char *file, int line);
 void error_add_traceback(error_t *error, const char *file, int line);
-void error_write(error_t *error, FILE *file);
+// error_write() defined in library header file
 void error_destroy(error_t *error);
 
 
@@ -143,9 +140,16 @@ typedef struct  {
     char *value;
 } attribute_t;
 
+
+// attribute_t defined in libary header file
+
 void attribute_init(attribute_t *this, const line_t *line);
 void attribute_final(attribute_t *this);
 
+
+//
+// attributes_t
+//
 
 //
 // attributes_t
@@ -157,7 +161,6 @@ typedef struct {
     int size;
     attribute_t *attributes;
 } attributes_t;
-
 
 attributes_t * attributes_create(size_t initsize);
 attributes_t * attributes_reference(attributes_t *this);

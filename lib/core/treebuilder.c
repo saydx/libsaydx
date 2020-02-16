@@ -27,22 +27,10 @@ void treebuilder_final(treebuilder_t *this)
 }
 
 
-void print_identation(int level)
+void treebuilder_transfer_tree(treebuilder_t *this, node_t **target)
 {
-    for (int ii = 0; ii < level; ++ii) {
-        printf("  ");
-    }
-}
-
-
-void print_attributes(attributes_t *attribs, int indentlevel)
-{
-    for (attribute_t *pattrib = attribs->attributes;
-         pattrib < attribs->attributes + attribs->nattributes;
-         ++pattrib) {
-        print_identation(indentlevel);
-        printf("&%s=%s\n", pattrib->name, pattrib->value);
-    }
+    *target = this->root;
+    this->root = NULL;
 }
 
 
@@ -116,26 +104,3 @@ error_t * treebuilder_receive_array(void *handler, array_t *array)
     RETURN_WITHOUT_ERROR();
 }
 
-
-//int main()
-//{
-//  msdparser_input_t msdinput;
-//  msdparser_t msdparser;
-//  treebuilder_t treebuilder;
-//
-//  treebuilder_init(&treebuilder);
-//  msdinput.eventhandler.handler = &treebuilder;
-//  msdinput.eventhandler.start_processing = &start_processing;
-//  msdinput.eventhandler.end_processing = &end_processing;
-//  msdinput.eventhandler.open_container_node = &open_container_node;
-//  msdinput.eventhandler.open_data_node = &open_data_node;
-//  msdinput.eventhandler.close_container_node = &close_container_node;
-//  msdinput.eventhandler.close_data_node = &close_data_node;
-//  msdinput.eventhandler.receive_array = &receive_array;
-//  msdparser_init(&msdparser, &msdinput);
-//  msdparser_parse_file(&msdparser, "test.msd");
-//  msdparser_final(&msdparser);
-//  treebuilder_final(&treebuilder);
-//  return 0;
-//}
-//

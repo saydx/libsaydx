@@ -1,12 +1,2 @@
-set(sources
-  array.c
-  commontypes.c
-  eventprinter.c
-  msdparser.c
-  node.c
-  query.c
-  treebuilder.c
-  treewalker.c)
-
-add_library(saydx ${sources})
-target_include_directories(saydx PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_subdirectory(core)
+add_subdirectory(api)

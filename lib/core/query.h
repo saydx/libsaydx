@@ -11,17 +11,18 @@
 #include "node.h"
 #include "array.h"
 
-typedef struct {
-} query_t;
+struct _query_t {};
+
+// query_t defined in standard library header
+
+// query_create() defined in library header file
+// query_destroy() defined in library header file
+// query_get_child() defined in library header file
+// query_get_child_child() defined in library header file
+// query_get_child_data() defined in library header file
+// query_get_child_data_i4() defined in library header file
 
 
-void query_get_child(query_t *query, node_t *node, const char *name, bool required, node_t **child);
-void query_get_child_child(query_t *query, node_t *node, const char *name, node_t **child,
-                           node_t **child_child);
-void query_get_child_data(query_t *query, node_t *node, const char *name,
-                          node_t **child, array_t **data);
-void query_get_child_data_i4(query_t *query, node_t *node, const char *name, node_t **child,
-                             int *data);
 //void query_get_child_data_i4_ptr(query_t *query, node_t *node, const char *name, node_t **child,
 //                                 int *rank, int **shape, int **data);
 //

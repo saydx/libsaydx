@@ -9,6 +9,23 @@
 #include "query.h"
 
 
+query_t * query_create()
+{
+    query_t *query;
+
+    query = MALLOC_OR_DIE(sizeof(*query));
+    return query;
+}
+
+
+void query_destroy(query_t *query)
+{
+    if (query) {
+        free(query);
+    }
+}
+
+
 void _get_child(query_t *query, node_t *node, const char *name, node_t **child)
 {
     *child = NULL;
