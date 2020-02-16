@@ -8,6 +8,7 @@
 #define SAYDX_NODE_H
 
 #include "commontypes.h"
+#include "array.h"
 
 struct node_t;
 

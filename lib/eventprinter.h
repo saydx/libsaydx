@@ -8,6 +8,7 @@
 #define SAYDX_EVENTPRINTER_H
 
 #include "commontypes.h"
+#include "array.h"
 
 typedef struct {
     int level;

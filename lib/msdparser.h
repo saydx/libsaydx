@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 #include "commontypes.h"
+#include "array.h"
 #include "eventhandler.h"
 
 //

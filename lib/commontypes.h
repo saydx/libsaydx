@@ -167,24 +167,6 @@ void attributes_destroy(attributes_t *this);
 
 
 //
-// array_t
-//
-
-typedef struct {
-    int nrefs;
-    char *typename;
-    int rank;
-    int *shape;
-    void *rawdata;
-} array_t;
-
-array_t * array_create(const line_t *line);
-array_t * array_reference(array_t *this);
-void array_destroy(array_t *this);
-int array_size(array_t *this);
-
-
-//
 //  string_t
 //
 
