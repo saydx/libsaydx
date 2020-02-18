@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+
 //
 // array_t
 //
@@ -58,7 +59,6 @@ void query_get_child_data(query_t *query, node_t *node, const char *name,
                           node_t **child, array_t **data);
 void query_get_child_data_i4(query_t *query, node_t *node, const char *name, node_t **child,
                              int *data);
-
 
 
 //! Reads an msd file into a saydx-tree.
