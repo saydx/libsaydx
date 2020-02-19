@@ -70,4 +70,12 @@ error_t * query_get_child_data_i4p(query_t *query, node_t *node, const char *nam
 //!
 error_t * read_msd_file(const char *name, node_t **root);
 
+
+// Serialize data into binary data.
+error_t * serialize(node_t *root, const char *mode, void **serialdata, int *serialsize);
+
+// Deserialize binary data into tree.
+error_t * deserialize(void *serialdata, int serialsize, const char *mode, node_t **root);
+
+
 #endif

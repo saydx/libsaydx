@@ -6,3 +6,6 @@ target_link_libraries(test2 saydx)
 
 add_executable(test2f test2f.f90)
 target_link_libraries(test2f saydx_fortran)
+
+add_executable(test3 test3.c)
+target_link_libraries(test3 saydx)

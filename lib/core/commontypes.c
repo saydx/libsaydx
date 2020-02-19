@@ -314,3 +314,44 @@ void string_final(string_t *this)
 {
     free(this->content);
 }
+
+
+
+//
+// blob_t
+//
+
+void blob_init(blob_t *this, size_t chunksize)
+{
+    this->chunksize = chunksize;
+    this->data = MALLOC_OR_DIE(chunksize * sizeof(*this->data));
+    this->_allocsize = chunksize;
+    this->size = 0;
+}
+
+
+void blob_final(blob_t *this)
+{
+    if (this->data) {
+        free(this->data);
+    }
+}
+
+
+void blob_add_bytes(blob_t *this, const void *data, size_t datasize)
+{
+    int newsize = this->size + datasize;
+    if (newsize > this->_allocsize) {
+        int newallocsize = ((newsize / this->chunksize) + 1) * this->chunksize;
+        this->data = REALLOC_OR_DIE(this->data, newallocsize);
+    }
+    memcpy(this->data + this->size, data, datasize);
+    this->size = newsize;
+}
+
+
+void blob_transfer_dataptr(blob_t *this, void **dataptr)
+{
+    *dataptr = this->data;
+    this->data = NULL;
+}

@@ -193,4 +193,20 @@ typedef enum dataType {
     STRING_DATA
 } dataType;
 
+
+//
+// blob_t
+//
+typedef struct {
+    void *data;
+    size_t size;
+    size_t chunksize;
+    size_t _allocsize;
+} blob_t;
+
+void blob_init(blob_t *this, size_t chunksize);
+void blob_final(blob_t *this);
+void blob_add_bytes(blob_t *this, const void *bytes, size_t bytesize);
+void blob_transfer_dataptr(blob_t *this, void **dataptr);
+
 #endif

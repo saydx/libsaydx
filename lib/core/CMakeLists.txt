@@ -6,8 +6,11 @@ set(sources
   node.c
   query.c
   saydx.c
+  serialize.c
   treebuilder.c
-  treewalker.c)
+  treepacker.c
+  treewalker.c
+  txtserializer.c)
 
 add_library(saydx ${sources})
 target_include_directories(saydx PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
