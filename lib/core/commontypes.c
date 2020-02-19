@@ -96,6 +96,9 @@ void error_add_traceback(error_t *err, const char *file, int line)
 
 void error_write(error_t *err, FILE *file)
 {
+    if (!file) {
+        file = stderr;
+    }
     fprintf(file, "Error: %s\n", err->message);
     fprintf(file, "Traceback:\n");
     traceback_write(err->traceback, file);

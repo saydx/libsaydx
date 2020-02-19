@@ -52,13 +52,14 @@ typedef struct _query_t query_t;
 query_t * query_create();
 void query_destroy(query_t *query);
 
-void query_get_child(query_t *query, node_t *node, const char *name, bool required, node_t **child);
-void query_get_child_child(query_t *query, node_t *node, const char *name, node_t **child,
-                           node_t **child_child);
-void query_get_child_data(query_t *query, node_t *node, const char *name,
-                          node_t **child, array_t **data);
-void query_get_child_data_i4(query_t *query, node_t *node, const char *name, node_t **child,
-                             int *data);
+error_t * query_get_child(query_t *query, node_t *node, const char *name, bool required,
+                          node_t **child);
+error_t * query_get_child_data(query_t *query, node_t *node, const char *name,
+                               node_t **child, array_t **data);
+error_t * query_get_child_data_i4(query_t *query, node_t *node, const char *name, node_t **child,
+                                  int *data);
+error_t * query_get_child_data_i4p(query_t *query, node_t *node, const char *name, node_t **child,
+                                   int *rank, int **shape, int **data);
 
 
 //! Reads an msd file into a saydx-tree.

@@ -14,12 +14,10 @@ program saydx_test2
   type(error_ptr) :: error
   type(query_ptr) :: query
   type(array_ptr) :: array
-  !integer :: skdver
-  character(:), pointer :: sptr
   integer :: skdver
 
 
-  call read_msd_file("test1.msd", root, error)
+  call read_msd_file("test2.msd", root)
   if (error%is_associated()) then
     write(stderr, "(A)") "Error occured during parsing the msd-file"
     !error_write(error)

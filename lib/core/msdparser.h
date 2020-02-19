@@ -48,7 +48,7 @@ typedef struct {
 
 void msdparser_init(msdparser_t *this, msdparser_input_t *input);
 void msdparser_final(msdparser_t *this);
-error_t * msdparser_parse_file(msdparser_t *this, char *fname);
+error_t * msdparser_parse_file(msdparser_t *this, const char *fname);
 error_t * msdparser_parse_open_file(msdparser_t *this, linereader_t *linereader);
 error_t * msdparser_read_attributes(
     msdparser_t *this, linereader_t *linereader, int nattribs, attributes_t *attributes);

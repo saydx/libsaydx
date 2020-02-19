@@ -22,7 +22,7 @@ error_t * read_msd_file(const char *name, node_t **root)
     msdinp.eventhandler.receive_array = &treebuilder_receive_array;
     msdparser_init(&msdparser, &msdinp);
     PROPAGATE_ERROR(
-        msdparser_parse_file(&msdparser, "test1.msd"));
+        msdparser_parse_file(&msdparser, name));
     msdparser_final(&msdparser);
     treebuilder_transfer_tree(&treebuilder, root);
     treebuilder_final(&treebuilder);

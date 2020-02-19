@@ -5,7 +5,8 @@
 !!>
 
 module saydx
-  use, intrinsic :: iso_c_binding, only : c_ptr, c_int, c_char, c_bool, c_associated, c_f_pointer
+  use, intrinsic :: iso_c_binding, only : c_ptr, c_int, c_char, c_bool, c_null_ptr,&
+      & c_associated, c_f_pointer
   use cinterop
   implicit none
   private
@@ -50,6 +51,12 @@ module saydx
 
 
   interface
+    subroutine c_error_write(error, file) bind(C, name='error_write')
+      import :: c_ptr
+      type(c_ptr), value :: error
+      type(c_ptr), value :: file
+    end subroutine c_error_write
+
     function c_read_msd_file(fname, root) result(error) bind(C, name='read_msd_file')
       import :: c_char, c_ptr
       character(kind=c_char), intent(in) :: fname(*)
@@ -92,7 +99,7 @@ module saydx
       type(c_ptr), intent(out) :: child
       integer(c_int), intent(out) :: data
     end subroutine c_query_get_child_data_i4
-      
+
 
 end interface
 
@@ -112,9 +119,19 @@ contains
   subroutine read_msd_file(fname, root, error)
     character(*), intent(in) :: fname
     type(node_ptr), intent(inout) :: root
-    type(error_ptr), intent(inout) :: error
+    type(error_ptr), intent(out), optional :: error
 
-    error%cptr = c_read_msd_file(f_c_string(fname), root%cptr)
+    type(error_ptr) :: error_
+
+    error_%cptr = c_read_msd_file(f_c_string(fname), root%cptr)
+    if (error_%is_associated()) then
+      if (present(error)) then
+        error = error_
+        return
+      else
+        call fatal_error(error_)
+      end if
+    end if
 
   end subroutine read_msd_file
 
@@ -172,6 +189,15 @@ contains
     call c_query_get_child_data_i4(this%cptr, node%cptr, f_c_string(name), child%cptr, data)
 
   end subroutine query_ptr_get_child_data_i4
+
+
+  subroutine fatal_error(error)
+    type(error_ptr), intent(in) :: error
+
+    call c_error_write(error%cptr, c_null_ptr)
+    error stop
+
+  end subroutine fatal_error
 
 
 end module saydx

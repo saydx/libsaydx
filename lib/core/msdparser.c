@@ -74,7 +74,7 @@ void msdparser_final(msdparser_t *this)
 }
 
 
-error_t * msdparser_parse_file(msdparser_t *this, char *fname)
+error_t * msdparser_parse_file(msdparser_t *this, const char *fname)
 {
     linereader_t linereader;
     error_t *error;

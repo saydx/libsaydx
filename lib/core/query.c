@@ -48,37 +48,61 @@ void _get_child(query_t *query, node_t *node, const char *name, node_t **child)
 }
 
 
-void query_get_child(query_t *query, node_t *node, const char *name, bool required, node_t **child)
+error_t * query_get_child(query_t *query, node_t *node, const char *name, bool required,
+                          node_t **child)
 {
     _get_child(query, node, name, child);
     if (!*child && required) {
-        fprintf(stderr, "Could not found child '%s'\n", name);
-        exit(-1);
+        RETURN_WITH_ERROR("Could not found child '%s' of node '%s'", name, node_get_name(node));
     }
+    RETURN_WITHOUT_ERROR();
 }
 
 
-void query_get_child_data(query_t *query, node_t *node, const char *name, node_t **child,
-                          array_t **data)
+error_t * query_get_child_data(query_t *query, node_t *node, const char *name, node_t **child,
+                               array_t **data)
 {
-    query_get_child(query, node, name, true, child);
-    if (!(*child)->array) {
-        fprintf(stderr, "Child '%s has no data'\n", name);
-        exit(-1);
-    }
+    PROPAGATE_ERROR(query_get_child(query, node, name, true, child));
     *data = array_reference((*child)->array);
+    RETURN_WITHOUT_ERROR();
 }
 
 
-void query_get_child_data_i4(query_t *query, node_t *node, const char *name, node_t **child,
-                             int *data)
+error_t * query_get_child_data_i4(query_t *query, node_t *node, const char *name, node_t **child,
+                                  int *data)
 {
     array_t *array;
-    query_get_child_data(query, node, name, child, &array);
+    PROPAGATE_ERROR(query_get_child_data(query, node, name, child, &array));
 
     int rank, *shape;
     int *dataptr;
     array_as_i4(array, &rank, &shape, &dataptr);
+    if (!dataptr) {
+        RETURN_WITH_ERROR("Data in node '%s' could not converted to type '%s'", node_get_name(node),
+                          "i4");
+    }
+    if (rank != 0) {
+        RETURN_WITH_ERROR("Data in node '%s' has incompatible rank (expected '%d', got '%d')",
+                          node_get_name(node), 0, rank);
+    }
     *data = *dataptr;
     array_destroy(array);
+    RETURN_WITHOUT_ERROR();
+}
+
+
+error_t * query_get_child_data_i4p(query_t *query, node_t *node, const char *name, node_t **child,
+                                   int *rank, int **shape, int **data)
+{
+    array_t *array;
+    PROPAGATE_ERROR(query_get_child_data(query, node, name, child, &array));
+
+    int *dataptr;
+    array_as_i4(array, rank, shape, data);
+    if (!dataptr) {
+        RETURN_WITH_ERROR("Data in node '%s' could not converted to type '%s'", node_get_name(node),
+                          "i4");
+    }
+    array_destroy(array);
+    RETURN_WITHOUT_ERROR();
 }
