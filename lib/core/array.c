@@ -97,6 +97,22 @@ int array_size(array_t *this)
 }
 
 
+size_t array_byte_size(array_t *this)
+{
+    int nitems = array_size(this);
+    if (strcmp(this->typename, "i4") == 0) {
+        return nitems * sizeof(int);
+    } else if (strcmp(this->typename, "r8") == 0) {
+        return nitems * sizeof(double);
+    } else if (strcmp(this->typename, "l") == 0) {
+        return nitems * sizeof(int);
+    } else if (strcmp(this->typename, "s") == 0) {
+        fprintf(stderr, "array_byte_size not working for string type yet!\n");
+        exit(-1);
+    }
+}
+
+
 
 void _get_values(array_t *this, int *rank, int **shape, void **data, bool compat) {
     if (compat) {

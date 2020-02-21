@@ -214,28 +214,6 @@ void linereader_read_line(linereader_t *this, line_t *line)
 // attribute_t
 //
 
-void attribute_init(attribute_t *this, const line_t *line)
-{
-    if (line->content[0] != '&') {
-        printf("ERROR: Attribute line must start with '&'!\n");
-        exit(1);
-    }
-    char *separator = strchr(line->content + 1, (int) ':');
-    if (!separator) {
-        printf("ERROR: Missing attribute separator!\n");
-        exit(1);
-    }
-    int wordlen = separator - line->content - 1;
-    this->name = MALLOC_OR_DIE((wordlen + 1) * sizeof(*this->name));
-    memcpy(this->name, line->content + 1, wordlen * sizeof(*this->name));
-    this->name[wordlen] = '\0';
-    wordlen = line->length - wordlen - 2;
-    this->value = MALLOC_OR_DIE((wordlen + 1) * sizeof(*this->value));
-    memcpy(this->value, separator + 1, wordlen * sizeof(*this->value));
-    this->value[wordlen] = '\0';
-}
-
-
 void attribute_final(attribute_t *this)
 {
     free(this->name);
@@ -313,4 +291,45 @@ attributes_t * attributes_reference(attributes_t *this)
 void string_final(string_t *this)
 {
     free(this->content);
+}
+
+
+
+//
+// blob_t
+//
+
+void blob_init(blob_t *this, size_t chunksize)
+{
+    this->chunksize = chunksize;
+    this->data = MALLOC_OR_DIE(chunksize * sizeof(*this->data));
+    this->_allocsize = chunksize;
+    this->size = 0;
+}
+
+
+void blob_final(blob_t *this)
+{
+    if (this->data) {
+        free(this->data);
+    }
+}
+
+
+void blob_add_bytes(blob_t *this, const void *data, size_t datasize)
+{
+    int newsize = this->size + datasize;
+    if (newsize > this->_allocsize) {
+        int newallocsize = ((newsize / this->chunksize) + 1) * this->chunksize;
+        this->data = REALLOC_OR_DIE(this->data, newallocsize);
+    }
+    memcpy(this->data + this->size, data, datasize);
+    this->size = newsize;
+}
+
+
+void blob_transfer_dataptr(blob_t *this, void **dataptr)
+{
+    *dataptr = this->data;
+    this->data = NULL;
 }

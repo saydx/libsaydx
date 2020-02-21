@@ -64,7 +64,7 @@ error_t * treebuilder_open_container_node(void *handler, const char *tagname, at
 }
 
 
-error_t * treebuilder_close_container_node(void *handler, const char *tagname)
+error_t * treebuilder_close_container_node(void *handler)
 {
     treebuilder_t *treebuilder = handler;
 
@@ -104,3 +104,15 @@ error_t * treebuilder_receive_array(void *handler, array_t *array)
     RETURN_WITHOUT_ERROR();
 }
 
+
+void eventhandler_init_treebuilder(eventhandler_t *eventhandler, treebuilder_t *treebuilder)
+{
+    eventhandler->handler = treebuilder;
+    eventhandler->start_processing = treebuilder_start_processing;
+    eventhandler->end_processing = treebuilder_end_processing;
+    eventhandler->open_container_node = treebuilder_open_container_node;
+    eventhandler->close_container_node = treebuilder_close_container_node;
+    eventhandler->open_data_node = treebuilder_open_data_node;
+    eventhandler->close_data_node = treebuilder_close_data_node;
+    eventhandler->receive_array = treebuilder_receive_array;
+}
