@@ -135,7 +135,7 @@ error_t * msdparser_parse_open_file(msdparser_t *this, linereader_t *linereader)
             array_destroy(array);
             break;
         case -1:
-            this->eventhandler.close_container_node(this->eventhandler.handler, headerline.tagname);
+            this->eventhandler.close_container_node(this->eventhandler.handler);
             break;
         case -2:
             this->eventhandler.close_data_node(this->eventhandler.handler);

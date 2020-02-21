@@ -52,14 +52,13 @@ error_t * treepacker_open_container_node(void *handler, const char *tagname, att
 }
 
 
-error_t * treepacker_close_container_node(void *handler, const char *tagname)
+error_t * treepacker_close_container_node(void *handler)
 {
     treepacker_t *this = handler;
     serializer_t *serializer = this->serializer;
     void *shandler = this->serializer->handler;
 
     serializer->add_int4(shandler, this->blob, -1);
-    serializer->add_string(shandler, this->blob, tagname);
     RETURN_WITHOUT_ERROR();
 }
 
@@ -100,19 +99,17 @@ error_t * treepacker_receive_array(void *handler, array_t *array)
     if (array->rank > 0) {
         serializer->add_int4v(shandler, this->blob, array->shape, array->rank);
     }
-    //serializer->add_bytes(shandler, this->blob, array->rawdata, array_byte_size(array));
+    serializer->add_raw_data(shandler, this->blob, array->rawdata, array_byte_size(array));
     RETURN_WITHOUT_ERROR();
 }
 
 
 
-void eventhandler_init_treepacker(eventhandler_t *eventhandler, blob_t *blob)
+void eventhandler_init_treepacker(eventhandler_t *eventhandler, blob_t *blob,
+                                  serializer_t *serializer)
 {
     treepacker_t *treepacker = MALLOC_OR_DIE(sizeof(*treepacker));
     treepacker->blob = blob;
-    serializer_t *serializer;
-    serializer = MALLOC_OR_DIE(sizeof(*serializer));
-    serializer_init_txtserializer(serializer);
     treepacker->serializer = serializer;
     eventhandler->handler = treepacker;
     eventhandler->start_processing = treepacker_start_processing;

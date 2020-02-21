@@ -31,7 +31,7 @@ int main()
     err = serialize(root, "b", &serialdata, &serialsize);
     check_error(err);
     fwrite(serialdata, serialsize, 1, stdout);
-    exit(0);
+    fwrite("\n", 1, 1, stdout);
 
     node_final(root);
     free(root);

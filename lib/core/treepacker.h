@@ -6,6 +6,11 @@
 #ifndef SAYDX_TREEPACKER_H
 #define SAYDX_TREEPACKER_H
 
-void eventhandler_init_treepacker(eventhandler_t *eventhandler, blob_t *blob);
+#include "eventhandler.h"
+#include "commontypes.h"
+#include "serializer.h"
+
+void eventhandler_init_treepacker(eventhandler_t *eventhandler, blob_t *blob,
+                                  serializer_t *serializer);
 
 #endif

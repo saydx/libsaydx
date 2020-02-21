@@ -9,7 +9,9 @@ set(sources
   serialize.c
   treebuilder.c
   treepacker.c
+  treeunpacker.c
   treewalker.c
+  txtdeserializer.c
   txtserializer.c)
 
 add_library(saydx ${sources})

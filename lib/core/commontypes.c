@@ -214,28 +214,6 @@ void linereader_read_line(linereader_t *this, line_t *line)
 // attribute_t
 //
 
-void attribute_init(attribute_t *this, const line_t *line)
-{
-    if (line->content[0] != '&') {
-        printf("ERROR: Attribute line must start with '&'!\n");
-        exit(1);
-    }
-    char *separator = strchr(line->content + 1, (int) ':');
-    if (!separator) {
-        printf("ERROR: Missing attribute separator!\n");
-        exit(1);
-    }
-    int wordlen = separator - line->content - 1;
-    this->name = MALLOC_OR_DIE((wordlen + 1) * sizeof(*this->name));
-    memcpy(this->name, line->content + 1, wordlen * sizeof(*this->name));
-    this->name[wordlen] = '\0';
-    wordlen = line->length - wordlen - 2;
-    this->value = MALLOC_OR_DIE((wordlen + 1) * sizeof(*this->value));
-    memcpy(this->value, separator + 1, wordlen * sizeof(*this->value));
-    this->value[wordlen] = '\0';
-}
-
-
 void attribute_final(attribute_t *this)
 {
     free(this->name);

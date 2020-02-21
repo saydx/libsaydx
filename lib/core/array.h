@@ -28,7 +28,7 @@ array_t * array_create(const line_t *line);
 array_t * array_reference(array_t *this);
 // array_destroy() defined in library header file
 int array_size(array_t *this);
-size_t * array_byte_size(array_t *this);
+size_t array_byte_size(array_t *this);
 
 void array_as_i4(array_t *this, int *rank, int **shape, int **dataptr);
 

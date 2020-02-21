@@ -75,7 +75,7 @@ error_t * read_msd_file(const char *name, node_t **root);
 error_t * serialize(node_t *root, const char *mode, void **serialdata, int *serialsize);
 
 // Deserialize binary data into tree.
-error_t * deserialize(void *serialdata, int serialsize, const char *mode, node_t **root);
+error_t * deserialize(const void *serialdata, int serialsize, const char *mode, node_t **root);
 
 
 #endif

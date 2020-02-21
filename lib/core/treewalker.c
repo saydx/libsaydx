@@ -38,6 +38,6 @@ void treewalker_walk(treewalker_t *this, node_t *root, int includeroot)
         }
     }
     if (includeroot && root->children) {
-        this->eventhandler.close_container_node(this->eventhandler.handler, root->name);
+        this->eventhandler.close_container_node(this->eventhandler.handler);
     }
 }

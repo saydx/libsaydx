@@ -143,7 +143,6 @@ typedef struct  {
 
 // attribute_t defined in libary header file
 
-void attribute_init(attribute_t *this, const line_t *line);
 void attribute_final(attribute_t *this);
 
 
@@ -209,4 +208,14 @@ void blob_final(blob_t *this);
 void blob_add_bytes(blob_t *this, const void *bytes, size_t bytesize);
 void blob_transfer_dataptr(blob_t *this, void **dataptr);
 
+
+enum {
+    OPEN_CONTAINER_NODE_EVENT = 1,
+    CLOSE_CONTAINER_NODE_EVENT = -1,
+    OPEN_DATA_NODE_EVENT = 2,
+    CLOSE_DATA_NODE_EVENT = -2,
+    RECEIVE_DATA_EVENT = 3
+};
+
 #endif
+
