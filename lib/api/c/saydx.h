@@ -33,6 +33,13 @@ void node_final(node_t *this);
 
 
 //
+// attributes_t
+//
+struct _attributes_t;
+typedef struct _attributes_t attributes_t;
+
+
+//
 // error_t
 //
 
@@ -77,5 +84,40 @@ error_t * serialize(node_t *root, const char *mode, void **serialdata, int *seri
 // Deserialize binary data into tree.
 error_t * deserialize(const void *serialdata, int serialsize, const char *mode, node_t **root);
 
+
+//
+// eventhandler_t
+//
+struct _eventhandler_t;
+typedef struct _eventhandler_t eventhandler_t;
+void eventhandler_destroy(eventhandler_t *eventhandler);
+
+    
+//
+// eventprinter_t
+//
+struct _eventprinter_t;
+typedef struct _eventprinter_t eventprinter_t;
+eventprinter_t * eventprinter_create();
+eventhandler_t * eventprinter_cast_to_eventhandler(eventprinter_t *);
+
+
+//
+// msdparser_input_t
+//
+typedef struct {
+    eventhandler_t *eventhandler;
+} msdparser_input_t;
+
+
+//
+// msdparser_t
+//
+struct _msd_parser_t;
+typedef struct _msdparser_t msdparser_t;
+
+msdparser_t  * msdparser_create(msdparser_input_t *msdparser_input);
+error_t * msdparser_parse_file(msdparser_t *this, const char *fname);
+void msdparser_destroy(msdparser_t *msdparser);
 
 #endif

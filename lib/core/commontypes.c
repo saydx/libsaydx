@@ -9,6 +9,7 @@
 
 #include "commontypes.h"
 
+
 //
 // traceback_t
 //
@@ -113,7 +114,7 @@ void error_destroy(error_t *err)
 }
 
 
-void *malloc_or_die(size_t allocsize, char *file, int line)
+void *malloc_or_die(size_t allocsize, const char *file, int line)
 {
     void *target = malloc(allocsize);
     if (!target) {
@@ -124,7 +125,7 @@ void *malloc_or_die(size_t allocsize, char *file, int line)
 }
 
 
-void *realloc_or_die(void *ptr, size_t allocsize, char *file, int line)
+void *realloc_or_die(void *ptr, size_t allocsize, const char *file, int line)
 {
     void *target = realloc(ptr, allocsize);
     if (!target) {

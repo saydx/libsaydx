@@ -9,9 +9,8 @@
 
 #include <stdio.h>
 
+#include "saydx.h"
 #include "commontypes.h"
-#include "array.h"
-#include "eventhandler.h"
 
 //
 // msd_header_line_t
@@ -35,20 +34,17 @@ int read_string_data(void *rawdata, const line_t *line, int items, int nitems);
 typedef int (*data_reader_t)(void *, const line_t *, int, int);
 
 
-typedef struct {
-    eventhandler_t eventhandler;
-} msdparser_input_t;
+// msdparser_input_t defined in library header file
 
-
-typedef struct {
+typedef struct _msdparser_t {
     FILE *file;
-    eventhandler_t eventhandler;
-} msdparser_t;
+    eventhandler_t *eventhandler;
+} _msdparser_t;
 
 
 void msdparser_init(msdparser_t *this, msdparser_input_t *input);
 void msdparser_final(msdparser_t *this);
-error_t * msdparser_parse_file(msdparser_t *this, const char *fname);
+// msdparser_parse_file() defined in library header file
 error_t * msdparser_parse_open_file(msdparser_t *this, linereader_t *linereader);
 error_t * msdparser_read_attributes(
     msdparser_t *this, linereader_t *linereader, int nattribs, attributes_t *attributes);

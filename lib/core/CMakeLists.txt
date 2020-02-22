@@ -1,6 +1,7 @@
 set(sources
   array.c
   commontypes.c
+  eventhandler.c
   eventprinter.c
   msdparser.c
   node.c

@@ -4,12 +4,12 @@
  * license that can be found in the LICENSE file.
  */
 
-#ifndef SAYDX_EVENTPRINTER_H
-#define SAYDX_EVENTPRINTER_H
-
+#include <stdlib.h>
 #include "eventhandler.h"
 
-void eventhandler_init_eventprinter(eventhandler_t *eventhandler);
-// eventhandler_create_eventprinter() defined in library header file
 
-#endif
+void eventhandler_destroy(eventhandler_t *eventhandler)
+{
+    eventhandler->final(eventhandler->handler);
+    free(eventhandler);
+}

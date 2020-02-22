@@ -7,7 +7,7 @@
 #ifndef SAYDX_EVENTHANDLER_H
 #define SAYDX_EVENTHANDLER_H
 
-#include "commontypes.h"
+#include "saydx.h"
 
 typedef error_t * (*eventhandler_start_processing_t)(void *, const char *);
 typedef error_t * (*eventhandler_end_processing_t)(void *, const char *);
@@ -16,9 +16,9 @@ typedef error_t * (*eventhandler_open_data_node_t)(void *, const char *, attribu
 typedef error_t * (*eventhandler_close_container_node_t)(void *);
 typedef error_t * (*eventhandler_close_data_node_t)(void *);
 typedef error_t * (*eventhandler_receive_array_t)(void *, array_t *);
-//typedef void (*eventhandler_final_t)(void *);
+typedef void (*eventhandler_final_t)(void *);
 
-typedef struct {
+typedef struct _eventhandler_t {
     void *handler;
     eventhandler_start_processing_t start_processing;
     eventhandler_end_processing_t end_processing;
@@ -27,8 +27,10 @@ typedef struct {
     eventhandler_open_data_node_t open_data_node;
     eventhandler_close_data_node_t close_data_node;
     eventhandler_receive_array_t receive_array;
-    //eventhandler_final_t final;
-} eventhandler_t;
+    eventhandler_final_t final;
+} _eventhandler_t;
 
+
+// eventhandler_destroy() declared in library header file
 
 #endif
