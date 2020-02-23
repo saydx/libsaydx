@@ -1,6 +1,7 @@
 set(sources
   array.c
   commontypes.c
+  deserializer.c
   eventhandler.c
   eventprinter.c
   msdparser.c
@@ -8,6 +9,7 @@ set(sources
   query.c
   saydx.c
   serialize.c
+  serializer.c
   treebuilder.c
   treepacker.c
   treeunpacker.c

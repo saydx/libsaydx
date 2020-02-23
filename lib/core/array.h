@@ -24,6 +24,7 @@ typedef struct _array_t {
 } _array_t;
 
 
+array_t * array_create();
 array_t * array_reference(array_t *this);
 // array_destroy() defined in library header file
 int array_size(array_t *this);

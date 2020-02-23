@@ -9,6 +9,14 @@
 #include "array.h"
 
 
+array_t * array_create()
+{
+    array_t *array = MALLOC_OR_DIE(sizeof(*array));
+    array->nrefs = 1;
+    return array;
+}
+
+
 void array_destroy(array_t *this)
 {
     string_t *pstring;

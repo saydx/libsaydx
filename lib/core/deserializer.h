@@ -16,7 +16,7 @@ typedef void (*deserializer_get_byte_t)(void *, void **, unsigned char *);
 typedef void (*deserializer_get_raw_data_t)(void *, void **, void **, size_t *);
 typedef void (*deserializer_final_t)(void *);
 
-typedef struct {
+typedef struct _deserializer_t {
     void *handler;
     deserializer_get_int4_t get_int4;
     deserializer_get_int4v_t get_int4v;
@@ -24,7 +24,7 @@ typedef struct {
     deserializer_get_byte_t get_byte;
     deserializer_get_raw_data_t get_raw_data;
     deserializer_final_t final;
-} deserializer_t;
+} _deserializer_t;
 
 
 #endif

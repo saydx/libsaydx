@@ -29,8 +29,7 @@ struct _node_t;
 typedef struct _node_t node_t;
 
 char *node_get_name(node_t *this);
-void node_final(node_t *this);
-
+void node_destroy(node_t *this);
 
 //
 // attributes_t
@@ -78,13 +77,6 @@ error_t * query_get_child_data_i4p(query_t *query, node_t *node, const char *nam
 error_t * read_msd_file(const char *name, node_t **root);
 
 
-// Serialize data into binary data.
-error_t * serialize(node_t *root, const char *mode, void **serialdata, int *serialsize);
-
-// Deserialize binary data into tree.
-error_t * deserialize(const void *serialdata, int serialsize, const char *mode, node_t **root);
-
-
 //
 // eventhandler_t
 //
@@ -92,7 +84,7 @@ struct _eventhandler_t;
 typedef struct _eventhandler_t eventhandler_t;
 void eventhandler_destroy(eventhandler_t *eventhandler);
 
-    
+
 //
 // eventprinter_t
 //
@@ -100,6 +92,16 @@ struct _eventprinter_t;
 typedef struct _eventprinter_t eventprinter_t;
 eventprinter_t * eventprinter_create();
 eventhandler_t * eventprinter_cast_to_eventhandler(eventprinter_t *);
+
+
+//
+// treebuilder_t
+//
+struct _treebuilder_t;
+typedef struct _treebuilder_t treebuilder_t;
+treebuilder_t * treebuilder_create();
+eventhandler_t * treebuilder_cast_to_eventhandler(treebuilder_t *);
+void treebuilder_transfer_tree(treebuilder_t *this, node_t **target);
 
 
 //
@@ -119,5 +121,50 @@ typedef struct _msdparser_t msdparser_t;
 msdparser_t  * msdparser_create(msdparser_input_t *msdparser_input);
 error_t * msdparser_parse_file(msdparser_t *this, const char *fname);
 void msdparser_destroy(msdparser_t *msdparser);
+
+
+//
+// serializer_t
+//
+struct _serializer_t;
+typedef struct _serializer_t serializer_t;
+void serializer_destroy(serializer_t *serializer);
+
+
+//
+// txtserializer_t
+//
+struct _txtserializer_t;
+typedef struct _txtserializer_t txtserializer_t;
+
+txtserializer_t *txtserializer_create();
+serializer_t * txtserializer_cast_to_serializer(txtserializer_t *txtserializer);
+
+
+//
+// deserializer_t
+//
+struct _deserializer_t;
+typedef struct _deserializer_t deserializer_t;
+void deserializer_destroy(deserializer_t *deserializer);
+
+
+//
+// txtdeserializer_t
+//
+struct _txtdeserializer_t;
+typedef struct _txtdeserializer_t txtdeserializer_t;
+
+txtdeserializer_t *txtdeserializer_create();
+deserializer_t * txtdeserializer_cast_to_deserializer(txtdeserializer_t *txtdeserializer);
+
+
+// Serialize data into binary data.
+error_t * serialize(node_t *root, serializer_t *serializer, void **serialdata, size_t *serialsize);
+
+// Deserialize binary data into tree.
+error_t * deserialize(const void *serialdata, size_t serialsize, deserializer_t *deserializer,
+                      node_t **root);
+
 
 #endif

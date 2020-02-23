@@ -97,9 +97,8 @@ error_t * query_get_child_data_i4p(query_t *query, node_t *node, const char *nam
     array_t *array;
     PROPAGATE_ERROR(query_get_child_data(query, node, name, child, &array));
 
-    int *dataptr;
     array_as_i4(array, rank, shape, data);
-    if (!dataptr) {
+    if (!data) {
         RETURN_WITH_ERROR("Data in node '%s' could not converted to type '%s'", node_get_name(node),
                           "i4");
     }

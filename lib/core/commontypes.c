@@ -312,6 +312,7 @@ void blob_init(blob_t *this, size_t chunksize)
 void blob_final(blob_t *this)
 {
     if (this->data) {
+        printf("B FINAL2\n");
         free(this->data);
     }
 }

@@ -9,6 +9,4 @@
 
 #include "deserializer.h"
 
-void deserializer_init_txtdeserializer(deserializer_t *this);
-
 #endif

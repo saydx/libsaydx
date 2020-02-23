@@ -9,7 +9,4 @@
 
 #include "serializer.h"
 
-void serializer_init_txtserializer(serializer_t *this);
-
-
 #endif

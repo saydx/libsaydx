@@ -5,9 +5,14 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include "txtserializer.h"
 
 #define BUFFER_SIZE 100
+
+
+struct _txtserializer_t {
+} _txt_serializer_t;
 
 
 void txtserializer_add_int4(void *handler, blob_t * blob, int data)
@@ -59,19 +64,28 @@ void txtserializer_add_raw_data(void *handler, blob_t * blob, const void *data, 
 }
 
 
-void txtserializer_final(void *handler)
+txtserializer_t * txtserializer_create()
 {
-    // Nothing to destruct
+    txtserializer_t *txtserializer = MALLOC_OR_DIE(sizeof(*txtserializer));
+    return txtserializer;
 }
 
 
-void serializer_init_txtserializer(serializer_t *this)
+void txtserializer_destroy(void *handler)
 {
-    this->handler = NULL;
-    this->add_int4 = txtserializer_add_int4;
-    this->add_int4v = txtserializer_add_int4v;
-    this->add_string = txtserializer_add_string;
-    this->add_byte = txtserializer_add_byte;
-    this->add_raw_data = txtserializer_add_raw_data;
-    this->final = txtserializer_final;
+    txtserializer_t *txtserializer = handler;
+    free(txtserializer);
+}
+
+
+serializer_t * txtserializer_cast_to_serializer(txtserializer_t *txtserializer)
+{
+    serializer_t *serializer = MALLOC_OR_DIE(sizeof(*serializer));
+    serializer->handler = txtserializer;
+    serializer->add_int4 = txtserializer_add_int4;
+    serializer->add_int4v = txtserializer_add_int4v;
+    serializer->add_string = txtserializer_add_string;
+    serializer->add_byte = txtserializer_add_byte;
+    serializer->add_raw_data = txtserializer_add_raw_data;
+    serializer->final = txtserializer_destroy;
 }

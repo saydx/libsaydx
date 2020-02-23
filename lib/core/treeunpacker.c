@@ -77,7 +77,7 @@ error_t *treeunpacker_unpack(treeunpacker_t *this, const void *blob, size_t blob
             break;
 
         case RECEIVE_DATA_EVENT:
-            array = MALLOC_OR_DIE(sizeof(*array));
+            array = array_create();
             deserializer->get_string(dhandler, &curpos, &array->typename);
             deserializer->get_int4(dhandler, &curpos, &array->rank);
             if (array->rank > 0) {
@@ -85,7 +85,7 @@ error_t *treeunpacker_unpack(treeunpacker_t *this, const void *blob, size_t blob
             }
             deserializer->get_raw_data(dhandler, &curpos, &array->rawdata, &rawdatasize);
             eventhandler->receive_array(ehandler, array);
-            //array_destroy(array);
+            array_destroy(array);
         }
     }
 

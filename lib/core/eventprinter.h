@@ -9,7 +9,5 @@
 
 #include "eventhandler.h"
 
-void eventhandler_init_eventprinter(eventhandler_t *eventhandler);
-// eventhandler_create_eventprinter() defined in library header file
 
 #endif

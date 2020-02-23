@@ -3,17 +3,15 @@
  * Use of this source code is governed by a BSD-style
  * license that can be found in the LICENSE file.
  */
-#include "commontypes.h"
-#include "eventhandler.h"
-#include "serializer.h"
-#include "txtserializer.h"
+
+#include "stdlib.h"
+#include "treepacker.h"
 #include "array.h"
 
-
-typedef struct {
+typedef struct _treepacker_t {
     blob_t *blob;
     serializer_t *serializer;
-} treepacker_t;
+} _treepacker_t;
 
 
 error_t * treepacker_start_processing(void *handler, const char *filename)
@@ -105,12 +103,25 @@ error_t * treepacker_receive_array(void *handler, array_t *array)
 
 
 
-void eventhandler_init_treepacker(eventhandler_t *eventhandler, blob_t *blob,
-                                  serializer_t *serializer)
+treepacker_t * treepacker_create(blob_t *blob, serializer_t *serializer)
 {
-    treepacker_t *treepacker = MALLOC_OR_DIE(sizeof(*treepacker));
+    treepacker_t * treepacker = MALLOC_OR_DIE(sizeof(*treepacker));
     treepacker->blob = blob;
     treepacker->serializer = serializer;
+    return treepacker;
+}
+
+
+void treepacker_destroy(void *handler)
+{
+    treepacker_t *treepacker = handler;
+    free(treepacker);
+}
+
+
+eventhandler_t * treepacker_cast_to_eventhandler(treepacker_t *treepacker)
+{
+    eventhandler_t *eventhandler = MALLOC_OR_DIE(sizeof(*eventhandler));
     eventhandler->handler = treepacker;
     eventhandler->start_processing = treepacker_start_processing;
     eventhandler->end_processing = treepacker_end_processing;
@@ -119,4 +130,6 @@ void eventhandler_init_treepacker(eventhandler_t *eventhandler, blob_t *blob,
     eventhandler->open_data_node = treepacker_open_data_node;
     eventhandler->close_data_node = treepacker_close_data_node;
     eventhandler->receive_array = treepacker_receive_array;
+    eventhandler->final = treepacker_destroy;
+    return eventhandler;
 }

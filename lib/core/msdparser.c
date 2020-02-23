@@ -13,7 +13,7 @@
 
 #define CHUNK_SIZE 4096
 
-array_t * array_create(const line_t *line);
+array_t * array_from_line(const line_t *line);
 
 
 msdparser_t * msdparser_create(msdparser_input_t *msdparser_input)
@@ -145,8 +145,9 @@ error_t * msdparser_parse_open_file(msdparser_t *this, linereader_t *linereader)
         case 2:
             attributes = attributes_create(headerline.nattributes);
             error = msdparser_read_attributes(this, linereader, headerline.nattributes, attributes);
-            if (error)
+            if (error) {
                 break;
+            }
             eventhandler->open_data_node(ehandler, headerline.tagname, attributes);
             attributes_destroy(attributes);
             PROPAGATE_ERROR(
@@ -212,7 +213,7 @@ error_t * msdparser_read_array(msdparser_t *this, linereader_t *linereader,
     int nitems, idim;
 
     linereader_read_line(linereader, &line);
-    *array = array_create(&line);
+    *array = array_from_line(&line);
     if ((*array)->rank) {
         nitems = 1;
         for (idim = 0; idim < (*array)->rank; ++idim) {
@@ -330,7 +331,7 @@ int read_string_data(void *rawdata, const line_t *line, int items, int nitems)
 }
 
 
-array_t * array_create(const line_t *line)
+array_t * array_from_line(const line_t *line)
 {
     array_t *this;
     char *separator, *datatype;
@@ -342,8 +343,7 @@ array_t * array_create(const line_t *line)
         return NULL;
     }
 
-    this = MALLOC_OR_DIE(sizeof(*this));
-    this->nrefs = 1;
+    this = array_create();
 
     datatype = line->content + 1;
     separator = strchr(datatype, (int) '|');

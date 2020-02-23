@@ -20,14 +20,22 @@ void check_error(error_t *error)
 
 int main()
 {
-    node_t *root;
-    error_t *err;
+    treebuilder_t *treebuilder = treebuilder_create();
+    eventhandler_t *eventhandler = treebuilder_cast_to_eventhandler(treebuilder);
 
-    err = read_msd_file("test2.msd", &root);
+    msdparser_input_t msdinp;
+    msdinp.eventhandler = eventhandler;
+    msdparser_t *msdparser = msdparser_create(&msdinp);
+    error_t *err = msdparser_parse_file(msdparser, "test2.msd");
     check_error(err);
+    msdparser_destroy(msdparser);
 
-    node_t *child;
+    node_t *root;
+    treebuilder_transfer_tree(treebuilder, &root);
+    eventhandler_destroy(eventhandler);
+
     query_t *query = query_create();
+    node_t *child;
 
     err = query_get_child(query, root, "slakodef_version", false, &child);
     check_error(err);
@@ -84,8 +92,7 @@ int main()
     printf("\n");
 
     query_destroy(query);
-    node_final(root);
-    free(root);
+    node_destroy(root);
 
     return 0;
 
