@@ -9,49 +9,11 @@
 #include "array.h"
 
 
-array_t * array_create(const line_t *line)
+array_t * array_create()
 {
-    array_t *this;
-    char *separator, *datatype;
-    int typenamelen;
-    int ii;
-
-    if (line->content[0] != '@') {
-        printf("ERROR, invalid data line must start with '@'");
-        return NULL;
-    }
-
-    this = MALLOC_OR_DIE(sizeof(*this));
-    this->nrefs = 1;
-
-    datatype = line->content + 1;
-    separator = strchr(datatype, (int) '|');
-    if (separator) {
-        typenamelen = separator - line->content - 1;
-    } else {
-        typenamelen = line->length - 1;
-    }
-    this->rank = 0;
-    if (separator) {
-        this->rank++;
-        for (ii = 0; ii < line->length - typenamelen - 2; ++ii) {
-            if (*(separator + ii + 1) == ',') {
-                this->rank++;
-            }
-        }
-        this->shape = MALLOC_OR_DIE(this->rank * sizeof(*this->shape));
-        this->shape[0] = atoi(separator + 1);
-        char *pchar = separator + 1;
-        for (int irank = 1; irank < this->rank; ++irank) {
-            while (*pchar != ',') pchar++;
-            this->shape[irank] = atoi(pchar + 1);
-        }
-    }
-    this->typename = (char *) MALLOC_OR_DIE((typenamelen + 1) * sizeof(char));
-    memcpy(this->typename, line->content + 1, typenamelen * sizeof(char));
-    this->typename[typenamelen] = '\0';
-    this->rawdata = NULL;
-    return this;
+    array_t *array = MALLOC_OR_DIE(sizeof(*array));
+    array->nrefs = 1;
+    return array;
 }
 
 

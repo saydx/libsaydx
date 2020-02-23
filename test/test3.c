@@ -27,17 +27,27 @@ int main()
     check_error(err);
 
     void *serialdata;
-    int serialsize;
-    err = serialize(root, "b", &serialdata, &serialsize);
+    size_t serialsize;
+    txtserializer_t *txtserializer = txtserializer_create();
+    serializer_t *serializer = txtserializer_cast_to_serializer(txtserializer);
+
+    err = serialize(root, serializer, &serialdata, &serialsize);
     check_error(err);
+
+    serializer_destroy(serializer);
+    node_destroy(root);
+
     fwrite(serialdata, serialsize, 1, stdout);
     fwrite("\n", 1, 1, stdout);
 
-    node_final(root);
-    free(root);
 
-    err = deserialize(serialdata, serialsize, "b", &root);
+    txtdeserializer_t *txtdeserializer = txtdeserializer_create();
+    deserializer_t *deserializer = txtdeserializer_cast_to_deserializer(txtdeserializer);
+    err = deserialize(serialdata, serialsize, deserializer, &root);
     check_error(err);
+
+    deserializer_destroy(deserializer);
+    free(serialdata);
 
     node_t *child;
     query_t *query = query_create();
@@ -97,9 +107,7 @@ int main()
     printf("\n");
 
     query_destroy(query);
-    node_final(root);
-    free(root);
+    node_destroy(root);
 
     return 0;
-
 }

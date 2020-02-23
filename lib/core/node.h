@@ -41,6 +41,7 @@ void node_append_child(node_t *this, node_t *child);
 void node_list_init(node_list_t *this, int initsize);
 void node_list_final(node_list_t *this);
 void node_list_append(node_list_t *this, node_t *node);
+void node_final(node_t *this);
 
 
 #endif

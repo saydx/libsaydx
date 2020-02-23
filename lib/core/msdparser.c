@@ -8,8 +8,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include "msdparser.h"
+#include "array.h"
+#include "eventhandler.h"
 
 #define CHUNK_SIZE 4096
+
+array_t * array_from_line(const line_t *line);
+
+
+msdparser_t * msdparser_create(msdparser_input_t *msdparser_input)
+{
+    msdparser_t *msdparser = MALLOC_OR_DIE(sizeof(*msdparser));
+    msdparser_init(msdparser, msdparser_input);
+    return msdparser;
+}
+
+
+void msdparser_destroy(msdparser_t *msdparser)
+{
+    free(msdparser);
+}
 
 
 //
@@ -78,16 +96,18 @@ error_t * msdparser_parse_file(msdparser_t *this, const char *fname)
 {
     linereader_t linereader;
     error_t *error;
+    eventhandler_t *eventhandler = this->eventhandler;
+    void *ehandler = eventhandler->handler;
 
     PROPAGATE_ERROR(
         linereader_init(&linereader, fname, CHUNK_SIZE));
-    this->eventhandler.start_processing(this->eventhandler.handler, fname);
+    eventhandler->start_processing(ehandler, fname);
     error = msdparser_parse_open_file(this, &linereader);
     if (error) {
         linereader_final(&linereader);
         PROPAGATE_ERROR(error);
     }
-    this->eventhandler.end_processing(this->eventhandler.handler, fname);
+    eventhandler->end_processing(ehandler, fname);
     linereader_final(&linereader);
     RETURN_WITHOUT_ERROR();
 }
@@ -100,6 +120,8 @@ error_t * msdparser_parse_open_file(msdparser_t *this, linereader_t *linereader)
     array_t *array = NULL;
     error_t *error = NULL;
     line_t line;
+    eventhandler_t *eventhandler = this->eventhandler;
+    void *ehandler = eventhandler->handler;
 
     while (1) {
         linereader_read_line(linereader, &line);
@@ -117,28 +139,27 @@ error_t * msdparser_parse_open_file(msdparser_t *this, linereader_t *linereader)
             error = msdparser_read_attributes(this, linereader, headerline.nattributes, attributes);
             if (error)
                 break;
-            this->eventhandler.open_container_node(
-                this->eventhandler.handler, headerline.tagname, attributes);
+            eventhandler->open_container_node(ehandler, headerline.tagname, attributes);
             attributes_destroy(attributes);
             break;
         case 2:
             attributes = attributes_create(headerline.nattributes);
             error = msdparser_read_attributes(this, linereader, headerline.nattributes, attributes);
-            if (error)
+            if (error) {
                 break;
-            this->eventhandler.open_data_node(
-                this->eventhandler.handler, headerline.tagname, attributes);
+            }
+            eventhandler->open_data_node(ehandler, headerline.tagname, attributes);
             attributes_destroy(attributes);
             PROPAGATE_ERROR(
                 msdparser_read_array(this, linereader, &array));
-            this->eventhandler.receive_array(this->eventhandler.handler, array);
+            eventhandler->receive_array(ehandler, array);
             array_destroy(array);
             break;
         case -1:
-            this->eventhandler.close_container_node(this->eventhandler.handler);
+            eventhandler->close_container_node(ehandler);
             break;
         case -2:
-            this->eventhandler.close_data_node(this->eventhandler.handler);
+            eventhandler->close_data_node(ehandler);
         }
         msdheaderline_final(&headerline);
         if (error) {
@@ -192,7 +213,7 @@ error_t * msdparser_read_array(msdparser_t *this, linereader_t *linereader,
     int nitems, idim;
 
     linereader_read_line(linereader, &line);
-    *array = array_create(&line);
+    *array = array_from_line(&line);
     if ((*array)->rank) {
         nitems = 1;
         for (idim = 0; idim < (*array)->rank; ++idim) {
@@ -308,3 +329,49 @@ int read_string_data(void *rawdata, const line_t *line, int items, int nitems)
     data->content[data->length - 1] = '\0';
     return 1;
 }
+
+
+array_t * array_from_line(const line_t *line)
+{
+    array_t *this;
+    char *separator, *datatype;
+    int typenamelen;
+    int ii;
+
+    if (line->content[0] != '@') {
+        printf("ERROR, invalid data line must start with '@'");
+        return NULL;
+    }
+
+    this = array_create();
+
+    datatype = line->content + 1;
+    separator = strchr(datatype, (int) '|');
+    if (separator) {
+        typenamelen = separator - line->content - 1;
+    } else {
+        typenamelen = line->length - 1;
+    }
+    this->rank = 0;
+    if (separator) {
+        this->rank++;
+        for (ii = 0; ii < line->length - typenamelen - 2; ++ii) {
+            if (*(separator + ii + 1) == ',') {
+                this->rank++;
+            }
+        }
+        this->shape = MALLOC_OR_DIE(this->rank * sizeof(*this->shape));
+        this->shape[0] = atoi(separator + 1);
+        char *pchar = separator + 1;
+        for (int irank = 1; irank < this->rank; ++irank) {
+            while (*pchar != ',') pchar++;
+            this->shape[irank] = atoi(pchar + 1);
+        }
+    }
+    this->typename = (char *) MALLOC_OR_DIE((typenamelen + 1) * sizeof(char));
+    memcpy(this->typename, line->content + 1, typenamelen * sizeof(char));
+    this->typename[typenamelen] = '\0';
+    this->rawdata = NULL;
+    return this;
+}
+

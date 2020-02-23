@@ -4,9 +4,12 @@
  * license that can be found in the LICENSE file.
  */
 
-#ifndef SAYDX_TREEBUILDER_H
-#define SAYDX_TREEBUILDER_H
+#include <stdlib.h>
+#include "deserializer.h"
 
-#include "saydx.h"
 
-#endif
+void deserializer_destroy(deserializer_t *deserializer)
+{
+    deserializer->final(deserializer->handler);
+    free(deserializer);
+}

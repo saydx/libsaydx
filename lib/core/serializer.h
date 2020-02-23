@@ -16,7 +16,7 @@ typedef void (*serializer_add_byte_t)(void *, blob_t *, unsigned char);
 typedef void (*serializer_add_raw_data_t)(void *, blob_t *, const void *, size_t);
 typedef void (*serializer_final_t)(void *);
 
-typedef struct {
+typedef struct _serializer_t {
     void *handler;
     serializer_add_int4_t add_int4;
     serializer_add_int4v_t add_int4v;
@@ -24,7 +24,8 @@ typedef struct {
     serializer_add_byte_t add_byte;
     serializer_add_raw_data_t add_raw_data;
     serializer_final_t final;
-} serializer_t;
+} _serializer_t;
+
 
 
 #endif

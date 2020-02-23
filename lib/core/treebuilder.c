@@ -7,23 +7,36 @@
 #include <stdlib.h>
 #include <string.h>
 #include "treebuilder.h"
+#include "commontypes.h"
+#include "node.h"
+#include "eventhandler.h"
 
 
-void treebuilder_init(treebuilder_t *this)
+typedef struct _treebuilder_t {
+    node_t *root, *curnode;
+    int level;
+} _treebuilder_t;
+
+
+treebuilder_t * treebuilder_create()
 {
+    treebuilder_t *this = MALLOC_OR_DIE(sizeof(*this));
     this->root = MALLOC_OR_DIE(sizeof(*this->root));
     node_init(this->root, "ROOT", 1, NULL);
     this->curnode = this->root;
     this->level = 0;
+    return this;
 }
 
 
-void treebuilder_final(treebuilder_t *this)
+void treebuilder_destroy(void *handler)
 {
+    treebuilder_t *this = handler;
     if (this->root) {
         node_final(this->root);
         free(this->root);
     }
+    free(this);
 }
 
 
@@ -105,8 +118,9 @@ error_t * treebuilder_receive_array(void *handler, array_t *array)
 }
 
 
-void eventhandler_init_treebuilder(eventhandler_t *eventhandler, treebuilder_t *treebuilder)
+eventhandler_t * treebuilder_cast_to_eventhandler(treebuilder_t *treebuilder)
 {
+    eventhandler_t *eventhandler = MALLOC_OR_DIE(sizeof(*eventhandler));
     eventhandler->handler = treebuilder;
     eventhandler->start_processing = treebuilder_start_processing;
     eventhandler->end_processing = treebuilder_end_processing;
@@ -115,4 +129,6 @@ void eventhandler_init_treebuilder(eventhandler_t *eventhandler, treebuilder_t *
     eventhandler->open_data_node = treebuilder_open_data_node;
     eventhandler->close_data_node = treebuilder_close_data_node;
     eventhandler->receive_array = treebuilder_receive_array;
+    eventhandler->final = treebuilder_destroy;
+    return eventhandler;
 }

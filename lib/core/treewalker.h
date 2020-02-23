@@ -11,11 +11,11 @@
 #include "treebuilder.h"
 
 typedef struct {
-    eventhandler_t eventhandler;
+    eventhandler_t *eventhandler;
 } treewalkerinp_t;
 
 typedef struct {
-    eventhandler_t eventhandler;
+    eventhandler_t *eventhandler;
 } treewalker_t;
 
 void treewalker_init(treewalker_t *this, treewalkerinp_t *input);

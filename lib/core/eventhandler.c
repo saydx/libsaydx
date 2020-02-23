@@ -4,9 +4,12 @@
  * license that can be found in the LICENSE file.
  */
 
-#ifndef SAYDX_TREEBUILDER_H
-#define SAYDX_TREEBUILDER_H
+#include <stdlib.h>
+#include "eventhandler.h"
 
-#include "saydx.h"
 
-#endif
+void eventhandler_destroy(eventhandler_t *eventhandler)
+{
+    eventhandler->final(eventhandler->handler);
+    free(eventhandler);
+}

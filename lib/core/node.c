@@ -52,6 +52,14 @@ void node_final(node_t *this)
     }
 }
 
+
+void node_destroy(node_t *this)
+{
+    node_final(this);
+    free(this);
+}
+    
+
 char * node_get_name(node_t *this)
 {
     return this->name;

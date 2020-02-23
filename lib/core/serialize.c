@@ -21,17 +21,15 @@
 #define BLOB_CHUNK_SIZE 4096
 
 
-error_t * serialize(node_t *root, const char *mode, void **serialdata, int *serialsize)
+error_t * serialize(node_t *root, serializer_t *serializer, void **serialdata, size_t *serialsize)
 {
     blob_t blob;
-    serializer_t serializer;
-    eventhandler_t eventhandler;
     treewalkerinp_t treewalkerinp;
     treewalker_t treewalker;
 
     blob_init(&blob, BLOB_CHUNK_SIZE);
-    serializer_init_txtserializer(&serializer);
-    eventhandler_init_treepacker(&eventhandler, &blob, &serializer);
+    treepacker_t *treepacker = treepacker_create(&blob, serializer);
+    eventhandler_t *eventhandler = treepacker_cast_to_eventhandler(treepacker);
 
     treewalkerinp.eventhandler = eventhandler;
     treewalker_init(&treewalker, &treewalkerinp);
@@ -40,24 +38,22 @@ error_t * serialize(node_t *root, const char *mode, void **serialdata, int *seri
     blob_transfer_dataptr(&blob, serialdata);
     *serialsize = blob.size;
     blob_final(&blob);
+    eventhandler_destroy(eventhandler);
     RETURN_WITHOUT_ERROR();
 }
 
 
-error_t * deserialize(const void *serialdata, int serialsize, const char *mode, node_t **root)
+error_t * deserialize(const void *serialdata, size_t serialsize, deserializer_t *deserializer,
+                      node_t **root)
 {
 
-    eventhandler_t eventhandler;
-    deserializer_t deserializer;
     treeunpacker_t treeunpacker;
-    treebuilder_t treebuilder;
+    treebuilder_t *treebuilder = treebuilder_create();
+    eventhandler_t *eventhandler = treebuilder_cast_to_eventhandler(treebuilder);
 
-    treebuilder_init(&treebuilder);
-    eventhandler_init_treebuilder(&eventhandler, &treebuilder);
-    deserializer_init_txtdeserializer(&deserializer);
-    treeunpacker_init(&treeunpacker, &eventhandler, &deserializer);
+    treeunpacker_init(&treeunpacker, eventhandler, deserializer);
     treeunpacker_unpack(&treeunpacker, serialdata, serialsize);
-    treebuilder_transfer_tree(&treebuilder, root);
-    treebuilder_final(&treebuilder);
+    treebuilder_transfer_tree(treebuilder, root);
+    eventhandler_destroy(eventhandler);
     RETURN_WITHOUT_ERROR();
 }

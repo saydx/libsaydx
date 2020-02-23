@@ -9,6 +9,10 @@
 #include "txtdeserializer.h"
 
 
+struct _txtdeserializer_t {
+} _txtdeserializer_t;
+
+
 void txtdeserializer_get_int4(void *handler, void **blob, int *data)
 {
     char *startptr = *blob;
@@ -63,7 +67,7 @@ void txtdeserializer_get_raw_data(void *handler, void **blob, void **data, size_
 
     txtdeserializer_get_int4(handler, blob, &buffer);
     *nbyte = (size_t) buffer;
-    bytedata = MALLOC_OR_DIE(sizeof(*bytedata));
+    bytedata = MALLOC_OR_DIE(*nbyte);
     for (size_t ii = 0; ii < *nbyte; ++ii) {
         txtdeserializer_get_int4(handler, blob, &buffer);
         bytedata[ii] = (unsigned char) buffer;
@@ -72,19 +76,28 @@ void txtdeserializer_get_raw_data(void *handler, void **blob, void **data, size_
 }
 
 
-void txtdeserializer_final(void *handler)
+txtdeserializer_t *txtdeserializer_create()
 {
-    // Nothing to destruct
+    txtdeserializer_t *this = MALLOC_OR_DIE(sizeof(*this));
+    return this;
 }
 
 
-void deserializer_init_txtdeserializer(deserializer_t *this)
+void txtdeserializer_destroy(void *handler)
 {
-    this->handler = NULL;
-    this->get_int4 = txtdeserializer_get_int4;
-    this->get_int4v = txtdeserializer_get_int4v;
-    this->get_string = txtdeserializer_get_string;
-    this->get_byte = txtdeserializer_get_byte;
-    this->get_raw_data = txtdeserializer_get_raw_data;
-    this->final = txtdeserializer_final;
+    txtdeserializer_t *this = handler;
+    free(this);
+}
+
+
+deserializer_t * txtdeserializer_cast_to_deserializer(txtdeserializer_t *txtdeserializer)
+{
+    deserializer_t *deserializer = MALLOC_OR_DIE(sizeof(*deserializer));
+    deserializer->handler = txtdeserializer;
+    deserializer->get_int4 = txtdeserializer_get_int4;
+    deserializer->get_int4v = txtdeserializer_get_int4v;
+    deserializer->get_string = txtdeserializer_get_string;
+    deserializer->get_byte = txtdeserializer_get_byte;
+    deserializer->get_raw_data = txtdeserializer_get_raw_data;
+    deserializer->final = txtdeserializer_destroy;
 }

@@ -10,8 +10,8 @@
 #include <stdio.h>
 #include "saydx.h"
 
-void *malloc_or_die(size_t allocsize, char *file, int line);
-void *realloc_or_die(void *ptr, size_t allocsize, char *file, int line);
+void *malloc_or_die(size_t allocsize, const char *file, int line);
+void *realloc_or_die(void *ptr, size_t allocsize, const char *file, int line);
 
 
 #define MALLOC_OR_DIE(ALLOCSIZE) malloc_or_die((ALLOCSIZE), __FILE__, __LINE__)
@@ -43,7 +43,6 @@ void *realloc_or_die(void *ptr, size_t allocsize, char *file, int line);
 }
 
 
-
 //
 // traceback_t
 //
@@ -60,6 +59,10 @@ traceback_t * traceback_add(traceback_t *traceback, const char *file, int line);
 void traceback_write(traceback_t *traceback, FILE *file);
 void traceback_destroy(traceback_t *traceback);
 
+
+//
+// error_t
+//
 
 typedef struct _error_t {
     traceback_t *traceback;
@@ -80,38 +83,14 @@ void error_destroy(error_t *error);
 //! Contains a line of variable length
 //!
 typedef struct {
-
-    //! Size of the allocated space (must be >= than line length)
     size_t size;
-
-    //! Lenght of the line
     size_t length;
-
-    //* Content of the line.
     char *content;
-
 } line_t;
 
 
-//! Initializes the line
-//!
-//! \param[inout] this  Allocated line instance
-//! \param[in] initsize  Initial line size.
-//!
 void line_init(line_t * this, size_t initsize);
-
-
-//! Finalizes line.
-//!
-//! \param[inout] this  Instance.
-//!
 void line_final(line_t *this);
-
-
-//! Minimalizes line storage.
-//!
-//! \param[inout] this  Instance.
-//!
 void line_minimize_storage(line_t *this);
 
 
@@ -119,13 +98,11 @@ void line_minimize_storage(line_t *this);
 // linereader_t
 //
 
-//!  Contains a line reader
 typedef struct {
     size_t chunksize;
     FILE *file;
 } linereader_t;
 
-//! Initializes a line reader
 error_t * linereader_init(linereader_t *this, const char *fname, size_t chunksize);
 void linereader_final(linereader_t *this);
 void linereader_read_line(linereader_t *this, line_t *line);
@@ -140,9 +117,6 @@ typedef struct  {
     char *value;
 } attribute_t;
 
-
-// attribute_t defined in libary header file
-
 void attribute_final(attribute_t *this);
 
 
@@ -150,16 +124,12 @@ void attribute_final(attribute_t *this);
 // attributes_t
 //
 
-//
-// attributes_t
-//
-
-typedef struct {
+typedef struct _attributes_t {
     int nrefs;
     int nattributes;
     int size;
     attribute_t *attributes;
-} attributes_t;
+} _attributes_t;
 
 attributes_t * attributes_create(size_t initsize);
 attributes_t * attributes_reference(attributes_t *this);
@@ -196,6 +166,7 @@ typedef enum dataType {
 //
 // blob_t
 //
+
 typedef struct {
     void *data;
     size_t size;
@@ -218,4 +189,3 @@ enum {
 };
 
 #endif
-

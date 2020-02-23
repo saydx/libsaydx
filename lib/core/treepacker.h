@@ -10,7 +10,10 @@
 #include "commontypes.h"
 #include "serializer.h"
 
-void eventhandler_init_treepacker(eventhandler_t *eventhandler, blob_t *blob,
-                                  serializer_t *serializer);
+struct _treepacker_t;
+typedef struct _treepacker_t treepacker_t;
+
+treepacker_t * treepacker_create(blob_t *blob, serializer_t *serializer);
+eventhandler_t * treepacker_cast_to_eventhandler(treepacker_t *treepacker);
 
 #endif
