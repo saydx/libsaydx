@@ -42,7 +42,7 @@ typedef struct _msdparser_t {
 } _msdparser_t;
 
 
-void msdparser_init(msdparser_t *this, msdparser_input_t *input);
+void msdparser_init(msdparser_t *this, eventhandler_t *eventhandler);
 void msdparser_final(msdparser_t *this);
 // msdparser_parse_file() defined in library header file
 error_t * msdparser_parse_open_file(msdparser_t *this, linereader_t *linereader);

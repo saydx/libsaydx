@@ -22,10 +22,7 @@ int main()
 {
     treebuilder_t *treebuilder = treebuilder_create();
     eventhandler_t *eventhandler = treebuilder_cast_to_eventhandler(treebuilder);
-
-    msdparser_input_t msdinp;
-    msdinp.eventhandler = eventhandler;
-    msdparser_t *msdparser = msdparser_create(&msdinp);
+    msdparser_t *msdparser = msdparser_create(eventhandler);
     error_t *err = msdparser_parse_file(msdparser, "test2.msd");
     check_error(err);
     msdparser_destroy(msdparser);

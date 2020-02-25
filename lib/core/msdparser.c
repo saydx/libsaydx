@@ -16,10 +16,10 @@
 array_t * array_from_line(const line_t *line);
 
 
-msdparser_t * msdparser_create(msdparser_input_t *msdparser_input)
+msdparser_t * msdparser_create(eventhandler_t *eventhandler)
 {
     msdparser_t *msdparser = MALLOC_OR_DIE(sizeof(*msdparser));
-    msdparser_init(msdparser, msdparser_input);
+    msdparser_init(msdparser, eventhandler);
     return msdparser;
 }
 
@@ -81,9 +81,9 @@ void msdheaderline_final(msdheaderline_t *this)
 // msdparser_t
 //
 
-void msdparser_init(msdparser_t *this, msdparser_input_t *input)
+void msdparser_init(msdparser_t *this, eventhandler_t *eventhandler)
 {
-    this->eventhandler = input->eventhandler;
+    this->eventhandler = eventhandler;
 }
 
 

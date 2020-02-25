@@ -4,11 +4,12 @@
 !!> license that can be found in the LICENSE file.
 !!>
 
-module cinterop
-  use, intrinsic :: iso_c_binding, only : c_char, c_ptr, c_size_t, c_f_pointer, c_null_char
+module saydx_cinterop
+  use, intrinsic :: iso_c_binding
   implicit none
   private
 
+  public :: c_bool, c_char, c_ptr, c_size_t, c_associated, c_null_ptr, c_null_char
   public :: c_f_string_pointer, f_c_string
 
 
@@ -49,4 +50,4 @@ contains
 
   end function f_c_string
 
-end module cinterop
+end module saydx_cinterop

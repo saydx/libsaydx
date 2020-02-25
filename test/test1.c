@@ -13,9 +13,7 @@ int main()
 
     eventprinter_t *eventprinter = eventprinter_create();
     eventhandler_t *eventhandler = eventprinter_cast_to_eventhandler(eventprinter);
-    msdparser_input_t msdinp;
-    msdinp.eventhandler = eventhandler;
-    msdparser_t * msdparser = msdparser_create(&msdinp);
+    msdparser_t * msdparser = msdparser_create(eventhandler);
 
     error_t *err = msdparser_parse_file(msdparser, "test1.msd");
     if (err) {

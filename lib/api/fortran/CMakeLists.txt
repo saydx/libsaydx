@@ -1,5 +1,11 @@
 set(sources
+  ciface.f90
   cinterop.f90
+  common.f90
+  commontypes.f90
+  eventhandler.f90
+  eventprinter.f90
+  msdparser.f90
   saydx.f90
   )
 

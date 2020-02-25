@@ -105,20 +105,12 @@ void treebuilder_transfer_tree(treebuilder_t *this, node_t **target);
 
 
 //
-// msdparser_input_t
-//
-typedef struct {
-    eventhandler_t *eventhandler;
-} msdparser_input_t;
-
-
-//
 // msdparser_t
 //
 struct _msd_parser_t;
 typedef struct _msdparser_t msdparser_t;
 
-msdparser_t  * msdparser_create(msdparser_input_t *msdparser_input);
+msdparser_t  * msdparser_create(eventhandler_t *eventhandler);
 error_t * msdparser_parse_file(msdparser_t *this, const char *fname);
 void msdparser_destroy(msdparser_t *msdparser);
 
