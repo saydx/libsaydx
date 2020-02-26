@@ -17,7 +17,7 @@ array_t * array_create()
 }
 
 
-void array_destroy(array_t *this)
+void array_dereference(array_t *this)
 {
     string_t *pstring;
     int iitem;

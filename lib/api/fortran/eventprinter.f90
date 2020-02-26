@@ -7,7 +7,7 @@
 module saydx_eventprinter
   use saydx_cinterop, only : c_ptr, c_null_ptr
   use saydx_ciface, only : c_eventprinter_create, c_eventprinter_cast_to_eventhandler
-  use saydx_eventhandler, only : eventhandler_t, eventhandler_finalize
+  use saydx_eventhandler, only : eventhandler_t, eventhandler_final
   implicit none
   private
 
@@ -19,7 +19,7 @@ module saydx_eventprinter
     private
     type(c_ptr) :: eventprinter_cptr = c_null_ptr
   contains
-    final :: eventprinter_finalize
+    final :: eventprinter_final
   end type eventprinter_t
 
 
@@ -34,12 +34,12 @@ contains
   end subroutine eventprinter_init
 
 
-  subroutine eventprinter_finalize(this)
+  subroutine eventprinter_final(this)
     type(eventprinter_t), intent(inout) :: this
 
-    call eventhandler_finalize(this%eventhandler_t)
+    call eventhandler_final(this%eventhandler_t)
 
-  end subroutine eventprinter_finalize
+  end subroutine eventprinter_final
 
 
 end module saydx_eventprinter

@@ -140,7 +140,7 @@ error_t * msdparser_parse_open_file(msdparser_t *this, linereader_t *linereader)
             if (error)
                 break;
             eventhandler->open_container_node(ehandler, headerline.tagname, attributes);
-            attributes_destroy(attributes);
+            attributes_dereference(attributes);
             break;
         case 2:
             attributes = attributes_create(headerline.nattributes);
@@ -149,11 +149,11 @@ error_t * msdparser_parse_open_file(msdparser_t *this, linereader_t *linereader)
                 break;
             }
             eventhandler->open_data_node(ehandler, headerline.tagname, attributes);
-            attributes_destroy(attributes);
+            attributes_dereference(attributes);
             PROPAGATE_ERROR(
                 msdparser_read_array(this, linereader, &array));
             eventhandler->receive_array(ehandler, array);
-            array_destroy(array);
+            array_dereference(array);
             break;
         case -1:
             eventhandler->close_container_node(ehandler);

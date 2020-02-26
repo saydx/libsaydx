@@ -5,7 +5,7 @@
 
 !> Wrapper for the MSD parser.
 module saydx_msdparser
-  use saydx_cinterop, only : c_null_ptr, f_c_string
+  use saydx_cinterop, only : c_null_ptr, c_associated, f_c_string
   use saydx_ciface, only : c_msdparser_create, c_msdparser_destroy, c_msdparser_parse_file
   use saydx_common, only : stderr
   use saydx_commontypes, only : c_ptr_wrapper_t, error_t
@@ -19,7 +19,7 @@ module saydx_msdparser
   contains
     private
     procedure, public :: parse_file => msdparser_parse_file
-    final :: msdparser_finalize
+    final :: msdparser_final
   end type msdparser_t
 
 contains
@@ -42,23 +42,26 @@ contains
 
     error_%cptr = c_msdparser_parse_file(this%cptr, f_c_string(fname))
     if (present(error)) then
-      error = error_
+      call error_%move_to(error)
       return
-    elseif (error%is_associated()) then
-      write(stderr, "(A)") "Unhandler error in 'msdparser_parse_file'"
+    elseif (error_%is_associated()) then
+      write(stderr, "(A)") "Unhandled error in 'msdparser_parse_file'"
       error stop
     end if
 
   end subroutine msdparser_parse_file
 
 
-  subroutine msdparser_finalize(this)
+  subroutine msdparser_final(this)
     type(msdparser_t), intent(inout) :: this
 
+    if (.not. c_associated(this%cptr)) then
+      return
+    end if
     call c_msdparser_destroy(this%cptr)
     this%cptr = c_null_ptr
 
-  end subroutine msdparser_finalize
+  end subroutine msdparser_final
 
 
 end module saydx_msdparser

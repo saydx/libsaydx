@@ -262,7 +262,7 @@ void attributes_set(attributes_t *this, attribute_t *newattrib)
 }
 
 
-void attributes_destroy(attributes_t *this)
+void attributes_dereference(attributes_t *this)
 {
     int iattrib;
 
@@ -312,7 +312,6 @@ void blob_init(blob_t *this, size_t chunksize)
 void blob_final(blob_t *this)
 {
     if (this->data) {
-        printf("B FINAL2\n");
         free(this->data);
     }
 }

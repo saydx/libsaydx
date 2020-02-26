@@ -57,7 +57,7 @@ error_t *treeunpacker_unpack(treeunpacker_t *this, const void *blob, size_t blob
             _unpack_attributes(deserializer, &curpos, &attribs);
             eventhandler->open_container_node(ehandler, str, attribs);
             free(str);
-            attributes_destroy(attribs);
+            attributes_dereference(attribs);
             break;
 
         case CLOSE_CONTAINER_NODE_EVENT:
@@ -69,7 +69,7 @@ error_t *treeunpacker_unpack(treeunpacker_t *this, const void *blob, size_t blob
             _unpack_attributes(deserializer, &curpos, &attribs);
             eventhandler->open_data_node(ehandler, str, attribs);
             free(str);
-            attributes_destroy(attribs);
+            attributes_dereference(attribs);
             break;
 
         case CLOSE_DATA_NODE_EVENT:
@@ -85,7 +85,7 @@ error_t *treeunpacker_unpack(treeunpacker_t *this, const void *blob, size_t blob
             }
             deserializer->get_raw_data(dhandler, &curpos, &array->rawdata, &rawdatasize);
             eventhandler->receive_array(ehandler, array);
-            array_destroy(array);
+            array_dereference(array);
         }
     }
 

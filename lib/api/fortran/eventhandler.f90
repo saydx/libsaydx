@@ -11,27 +11,28 @@ module saydx_eventhandler
   implicit none
   private
 
-  public :: eventhandler_t, eventhandler_finalize
+  public :: eventhandler_t, eventhandler_final
 
 
   type, extends(c_ptr_wrapper_t) :: eventhandler_t
   contains
-    final :: eventhandler_finalize
+    final :: eventhandler_final
   end type eventhandler_t
 
 
 contains
 
 
-  subroutine eventhandler_finalize(this)
+  subroutine eventhandler_final(this)
     type(eventhandler_t), intent(inout) :: this
 
-    if (c_associated(this%cptr)) then
-      call c_eventhandler_destroy(this%cptr);
+    if (.not. c_associated(this%cptr)) then
+      return
     end if
+    call c_eventhandler_destroy(this%cptr);
     this%cptr = c_null_ptr
 
-  end subroutine eventhandler_finalize
+  end subroutine eventhandler_final
 
 
 end module saydx_eventhandler

@@ -1,23 +1,27 @@
+!
+! Copyright (c) 2020 Bálint Aradi, Universität Bremen. All rights reserved.
+! Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
+!
+
+!> Commonly used type
 module saydx_commontypes
+  use saydx_common, only : fatal_error
   use saydx_cinterop, only : c_ptr, c_null_ptr, c_associated
   implicit none
   private
 
   public :: c_ptr_wrapper_t, error_t
+  public :: handle_error
 
 
   type :: c_ptr_wrapper_t
     type(c_ptr) :: cptr = c_null_ptr
   contains
-    procedure, non_overridable :: is_associated => c_ptr_wrapper_is_associated
+    procedure :: is_associated => c_ptr_wrapper_is_associated
+    procedure, private :: c_ptr_wrapper_assign
+    generic :: assignment(=) => c_ptr_wrapper_assign
+    procedure :: move_to => c_ptr_wrapper_move_to
   end type c_ptr_wrapper_t
-
-
-  !!type, extends(c_ptr_wrapper_t) :: node_ptr
-  !!  private
-  !!contains
-  !!  procedure :: get_name => node_ptr_get_name
-  !!end type node_ptr
 
 
   type, extends(c_ptr_wrapper_t) :: error_t
@@ -35,59 +39,40 @@ contains
 
   end function c_ptr_wrapper_is_associated
 
-  !!
-  !!function node_ptr_get_name(this) result(pstr)
-  !!  class(node_ptr), intent(in) :: this
-  !!  character(:), pointer :: pstr
-  !!
-  !!  call c_f_string_pointer(c_node_get_name(this%cptr), pstr)
-  !!
-  !!end function node_ptr_get_name
-  !!
-  !!subroutine query_ptr_get_child(this, node, name, child, required)
-  !!  class(query_ptr), intent(inout) :: this
-  !!  type(node_ptr), intent(in) :: node
-  !!  character(*), intent(in) :: name
-  !!  type(node_ptr), intent(out) :: child
-  !!  logical, intent(in), optional :: required
-  !!
-  !!  call c_query_get_child(this%cptr, node%cptr, f_c_string(name), logical(required, kind=c_bool),&
-  !!      & child%cptr)
-  !!
-  !!end subroutine query_ptr_get_child
-  !!
-  !!
-  !!subroutine query_ptr_get_child_data_array(this, node, name, data, child)
-  !!  class(query_ptr), intent(inout) :: this
-  !!  type(node_ptr), intent(in) :: node
-  !!  character(*), intent(in) :: name
-  !!  type(array_ptr), intent(out) :: data
-  !!  type(node_ptr), intent(out), optional :: child
-  !!
-  !!  type(node_ptr) :: child_
-  !!
-  !!  call c_query_get_child_data(this%cptr, node%cptr, f_c_string(name), child_%cptr, data%cptr)
-  !!  if (present(child)) then
-  !!    child = child_
-  !!  end if
-  !!
-  !!end subroutine query_ptr_get_child_data_array
-  !!
-  !!
-  !!subroutine query_ptr_get_child_data_i4(this, node, name, data, child)
-  !!  class(query_ptr), intent(inout) :: this
-  !!  type(node_ptr), intent(in) :: node
-  !!  character(*), intent(in) :: name
-  !!  integer(c_int), intent(out) :: data
-  !!  type(node_ptr), intent(out), optional :: child
-  !!
-  !!  type(array_ptr) :: array
-  !!  integer(c_int), pointer :: pdata
-  !!
-  !!  call c_query_get_child_data_i4(this%cptr, node%cptr, f_c_string(name), child%cptr, data)
-  !!
-  !!end subroutine query_ptr_get_child_data_i4
 
+  subroutine c_ptr_wrapper_assign(lhs, rhs)
+    class(c_ptr_wrapper_t), intent(inout) :: lhs
+    class(c_ptr_wrapper_t), intent(in) :: rhs
+
+    call fatal_error("Assignment of c pointer wrappers is not permitted")
+
+  end subroutine c_ptr_wrapper_assign
+
+
+  subroutine c_ptr_wrapper_move_to(this, newthis)
+    class(c_ptr_wrapper_t), intent(inout) :: this
+    class(c_ptr_wrapper_t), intent(out) :: newthis
+
+    newthis%cptr = this%cptr
+    this%cptr = c_null_ptr
+
+  end subroutine c_ptr_wrapper_move_to
+
+
+  subroutine handle_error(error, msg, opterror)
+    type(error_t), intent(inout) :: error
+    character(*), intent(in) :: msg
+    type(error_t), intent(out), optional :: opterror
+
+    if (present(opterror)) then
+      call error%move_to(opterror)
+      return
+    end if
+    if (error%is_associated()) then
+      call fatal_error(msg)
+    end if
+
+  end subroutine handle_error
 
 
 end module saydx_commontypes

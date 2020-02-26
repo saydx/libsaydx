@@ -135,7 +135,7 @@ attributes_t * attributes_create(size_t initsize);
 attributes_t * attributes_reference(attributes_t *this);
 void attributes_set(attributes_t *this, attribute_t *attrib);
 void attributes_append(attributes_t *this, attribute_t *attrib);
-void attributes_destroy(attributes_t *this);
+void attributes_dereference(attributes_t *this);
 
 
 //

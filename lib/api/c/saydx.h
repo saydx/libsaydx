@@ -18,7 +18,14 @@
 struct _array_t;
 typedef struct _array_t array_t;
 
-void array_destroy(array_t *this);
+void array_dereference(array_t *this);
+
+
+//
+// attributes_t
+//
+struct _attributes_t;
+typedef struct _attributes_t attributes_t;
 
 
 //
@@ -29,14 +36,10 @@ struct _node_t;
 typedef struct _node_t node_t;
 
 char *node_get_name(node_t *this);
-void node_destroy(node_t *this);
-
-//
-// attributes_t
-//
-struct _attributes_t;
-typedef struct _attributes_t attributes_t;
-
+bool node_has_parent(node_t *this);
+node_t * node_create(const char *name, int nodetype, attributes_t *attributes);
+node_t * node_reference(node_t *this);
+void node_dereference(node_t *this);
 
 //
 // error_t

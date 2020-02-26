@@ -21,6 +21,7 @@ typedef struct {
 
 
 typedef struct _node_t {
+    int nrefs;
     char *name;
     attributes_t *attributes;
     array_t *array;
@@ -34,14 +35,14 @@ typedef struct _node_t {
 // node_t and node_list_t defined in library header file
 //
 
-void node_init(node_t *this, const char *name, int nodetype, attributes_t *attributes);
-// node_final() defined library header file
+// node_create defined in the library header file
+// node_destroy() defined library header file
+
 void node_append_child(node_t *this, node_t *child);
 
-void node_list_init(node_list_t *this, int initsize);
-void node_list_final(node_list_t *this);
+node_list_t * node_list_create(int initsize);
+void node_list_destroy(node_list_t *this);
 void node_list_append(node_list_t *this, node_t *node);
-void node_final(node_t *this);
 
 
 #endif

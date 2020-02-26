@@ -1,4 +1,5 @@
 set(sources
+  array.f90
   ciface.f90
   cinterop.f90
   common.f90
@@ -6,7 +7,10 @@ set(sources
   eventhandler.f90
   eventprinter.f90
   msdparser.f90
+  node.f90
+  query.f90
   saydx.f90
+  treebuilder.f90
   )
 
 add_library(saydx_fortran ${sources})

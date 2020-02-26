@@ -7,10 +7,6 @@
 #ifndef SAYDX_QUERY_H
 #define SAYDX_QUERY_H
 
-#include <stdbool.h>
-#include "node.h"
-#include "array.h"
-
 struct _query_t {};
 
 // query_t defined in standard library header

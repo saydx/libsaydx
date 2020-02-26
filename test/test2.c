@@ -38,31 +38,37 @@ int main()
     check_error(err);
     printf("Child '%s' of node '%s' ", "slakodef_version", node_get_name(root));
     printf(child ? "FOUND\n" : "NOT FOUND\n");
+    node_dereference(child);
 
     err = query_get_child(query, root, "non_existent_tag", false, &child);
     check_error(err);
     printf("Child '%s' of node '%s' ", "non_existent_tag", node_get_name(root));
     printf(child ? "FOUND\n" : "NOT FOUND\n");
+    node_dereference(child);
 
     array_t *data;
     err = query_get_child_data(query, root, "slakodef_version", &child, &data);
     check_error(err);
     printf("Data child '%s' found\n", "slakodef_version");
-    array_destroy(data);
+    node_dereference(child);
+    array_dereference(data);
 
     err = query_get_child_data(query, root, "slakodef_version", &child, &data);
     check_error(err);
     printf("Data child '%s' found (2)\n", "slakodef_version");
-    array_destroy(data);
+    node_dereference(child);
+    array_dereference(data);
 
     int skdver;
     err = query_get_child_data_i4(query, root, "slakodef_version", &child, &skdver);
     check_error(err);
     printf("Integer data of '%s': %d\n", "slakodef_version", skdver);
+    node_dereference(child);
 
     err = query_get_child(query, root, "two_center_params", true, &child);
     check_error(err);
     printf("Child '%s': of node '%s' found.\n", node_get_name(child), node_get_name(root));
+    node_dereference(child);
 
     node_t *child2;
     int rank, asize;
@@ -87,9 +93,10 @@ int main()
         printf(", %d", i4data[ii]);
     }
     printf("\n");
+    node_dereference(child2);
 
     query_destroy(query);
-    node_destroy(root);
+    node_dereference(root);
 
     return 0;
 

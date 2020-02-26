@@ -4,17 +4,25 @@
 !
 
 module saydx
-  use saydx_commontypes, only : error_t
-  use saydx_eventhandler, only : eventhandler_t
-  use saydx_eventprinter, only : eventprinter_t, eventprinter_init
-  use saydx_msdparser, only: msdparser_t, msdparser_init
+  use saydx_array
+  use saydx_commontypes
+  use saydx_eventhandler
+  use saydx_eventprinter
+  use saydx_msdparser
+  use saydx_node
+  use saydx_query
+  use saydx_treebuilder
   implicit none
   private
 
+  public :: array_t
   public :: error_t
-  public :: msdparser_t, msdparser_init
   public :: eventhandler_t
   public :: eventprinter_t, eventprinter_init
+  public :: msdparser_t, msdparser_init
+  public :: node_t
+  public :: query_t, query_init
+  public :: treebuilder_t, treebuilder_init
 
 
 contains

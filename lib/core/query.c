@@ -6,7 +6,10 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "saydx.h"
 #include "query.h"
+#include "commontypes.h"
+#include "node.h"
 
 
 query_t * query_create()
@@ -33,7 +36,7 @@ void _get_child(query_t *query, node_t *node, const char *name, node_t **child)
         return;
     }
     if (!strcmp(name, ".")) {
-        *child = node;
+        *child = node_reference(node);
         return;
     }
     node_t **items = node->children->items;
@@ -41,7 +44,7 @@ void _get_child(query_t *query, node_t *node, const char *name, node_t **child)
     for (int ichild = 0; ichild < node->children->size; ++ichild) {
         item = items[ichild];
         if (!strcmp(name, item->name)) {
-            *child = item;
+            *child = node_reference(item);
             return;
         }
     }
@@ -78,15 +81,17 @@ error_t * query_get_child_data_i4(query_t *query, node_t *node, const char *name
     int *dataptr;
     array_as_i4(array, &rank, &shape, &dataptr);
     if (!dataptr) {
+        node_dereference(*child);
         RETURN_WITH_ERROR("Data in node '%s' could not converted to type '%s'", node_get_name(node),
                           "i4");
     }
     if (rank != 0) {
+        node_dereference(*child);
         RETURN_WITH_ERROR("Data in node '%s' has incompatible rank (expected '%d', got '%d')",
                           node_get_name(node), 0, rank);
     }
     *data = *dataptr;
-    array_destroy(array);
+    array_dereference(array);
     RETURN_WITHOUT_ERROR();
 }
 
@@ -99,9 +104,10 @@ error_t * query_get_child_data_i4p(query_t *query, node_t *node, const char *nam
 
     array_as_i4(array, rank, shape, data);
     if (!data) {
+        node_dereference(*child);
         RETURN_WITH_ERROR("Data in node '%s' could not converted to type '%s'", node_get_name(node),
                           "i4");
     }
-    array_destroy(array);
+    array_dereference(array);
     RETURN_WITHOUT_ERROR();
 }

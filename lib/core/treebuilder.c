@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "saydx.h"
 #include "treebuilder.h"
 #include "commontypes.h"
 #include "node.h"
@@ -21,8 +22,7 @@ typedef struct _treebuilder_t {
 treebuilder_t * treebuilder_create()
 {
     treebuilder_t *this = MALLOC_OR_DIE(sizeof(*this));
-    this->root = MALLOC_OR_DIE(sizeof(*this->root));
-    node_init(this->root, "ROOT", 1, NULL);
+    this->root = node_create("ROOT", 1, NULL);
     this->curnode = this->root;
     this->level = 0;
     return this;
@@ -33,8 +33,7 @@ void treebuilder_destroy(void *handler)
 {
     treebuilder_t *this = handler;
     if (this->root) {
-        node_final(this->root);
-        free(this->root);
+        node_dereference(this->root);
     }
     free(this);
 }
@@ -52,14 +51,12 @@ error_t * treebuilder_start_processing(void *handler, const char *filename)
     treebuilder_t *treebuilder = handler;
 
     treebuilder->level = 0;
-    printf("-> START PROCESSING: %s\n", filename);
     RETURN_WITHOUT_ERROR();
 }
 
 
 error_t * treebuilder_end_processing(void *handler, const char *filename)
 {
-    printf("<- END PROCESSING: %s\n", filename);
     RETURN_WITHOUT_ERROR();
 }
 
@@ -69,10 +66,10 @@ error_t * treebuilder_open_container_node(void *handler, const char *tagname, at
     treebuilder_t *treebuilder = handler;
     node_t *node;
 
-    node = MALLOC_OR_DIE(sizeof(*node));
-    node_init(node, tagname, 1, attribs);
+    node = node_create(tagname, 1, attribs);
     node_append_child(treebuilder->curnode, node);
     treebuilder->curnode = node;
+    node_dereference(node);
     RETURN_WITHOUT_ERROR();
 }
 
@@ -92,10 +89,10 @@ error_t * treebuilder_open_data_node(void *handler, const char *tagname, attribu
 
     node_t *node;
 
-    node = MALLOC_OR_DIE(sizeof(*node));
-    node_init(node, tagname, 2, attribs);
+    node = node_create(tagname, 2, attribs);
     node_append_child(treebuilder->curnode, node);
     treebuilder->curnode = node;
+    node_dereference(node);
     RETURN_WITHOUT_ERROR();
 }
 
