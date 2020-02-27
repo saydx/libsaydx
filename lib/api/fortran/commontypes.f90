@@ -10,7 +10,7 @@ module saydx_commontypes
   implicit none
   private
 
-  public :: c_ptr_wrapper_t, error_t
+  public :: c_ptr_wrapper_t, c_ptr_movable_wrapper_t, error_t
   public :: handle_error
 
 
@@ -20,11 +20,16 @@ module saydx_commontypes
     procedure :: is_associated => c_ptr_wrapper_is_associated
     procedure, private :: c_ptr_wrapper_assign
     generic :: assignment(=) => c_ptr_wrapper_assign
-    procedure :: move_to => c_ptr_wrapper_move_to
   end type c_ptr_wrapper_t
 
 
-  type, extends(c_ptr_wrapper_t) :: error_t
+  type, extends(c_ptr_wrapper_t) :: c_ptr_movable_wrapper_t
+  contains
+    procedure :: move_to => c_ptr_movable_wrapper_move_to
+  end type c_ptr_movable_wrapper_t
+
+
+  type, extends(c_ptr_movable_wrapper_t) :: error_t
     private
   end type error_t
 
@@ -49,14 +54,14 @@ contains
   end subroutine c_ptr_wrapper_assign
 
 
-  subroutine c_ptr_wrapper_move_to(this, newthis)
-    class(c_ptr_wrapper_t), intent(inout) :: this
-    class(c_ptr_wrapper_t), intent(out) :: newthis
+  subroutine c_ptr_movable_wrapper_move_to(this, newthis)
+    class(c_ptr_movable_wrapper_t), intent(inout) :: this
+    class(c_ptr_movable_wrapper_t), intent(out) :: newthis
 
     newthis%cptr = this%cptr
     this%cptr = c_null_ptr
 
-  end subroutine c_ptr_wrapper_move_to
+  end subroutine c_ptr_movable_wrapper_move_to
 
 
   subroutine handle_error(error, msg, opterror)

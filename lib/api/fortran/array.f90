@@ -4,6 +4,7 @@
 !
 
 !> Wrapper for array
+module saydx_array
   use saydx_cinterop, only : c_null_ptr, c_associated
   use saydx_ciface, only : c_array_dereference
   use saydx_commontypes, only : c_ptr_wrapper_t

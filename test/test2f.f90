@@ -45,17 +45,17 @@ contains
     call query%get_child_data(root, "slakodef_version", data, child=child, error=error)
     call check_error(error)
     write(stdout, "(A)") "Data child 'slakodef_version' found (2)"
-    !!
-    !!call query%get_child_data(root, "slakodef_version", skdver, error)
-    !!write(stdout, "(A,I0)") "Integer data of 'slakodef_version': ", skdver
-    !!
-    !!call query%get_child(root, "two_center_params", child, required=.true.)
-    !!write(stdout, "(5A)") "Child '", child%get_name(), "' of node '", root%get_name(), "' found'"
-    !!
-    !!call query%get_child_data(child, "some_integer_array", i4data)
-    !!write(stdout, "(A,I0,1X,I0)") "Rank 2 integer array found. Shape: ", shape(i4data)
-    !!write(stdout, "(A)") "Data:"
-    !!write(stoud, *) i4data
+
+    call query%get_child_data(root, "slakodef_version", skdver, error=error)
+    write(stdout, "(A,I0)") "Integer data of 'slakodef_version': ", skdver
+
+    call query%get_child(root, "two_center_params", child, required=.true.)
+    write(stdout, "(5A)") "Child '", child%get_name(), "' of node '", root%get_name(), "' found'"
+
+    call query%get_child_data(child, "some_integer_array", i4data)
+    write(stdout, "(A,I0,1X,I0)") "Rank 2 integer array found. Shape: ", shape(i4data)
+    write(stdout, "(A)") "Data:"
+    write(stdout, *) i4data
 
   end subroutine run_test
 

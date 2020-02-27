@@ -5,7 +5,7 @@
 
 !!> Contains the C-bindings for the saydx library
 module saydx_ciface
-  use saydx_cinterop, only : c_ptr, c_char, c_bool, c_null_ptr
+  use saydx_cinterop, only : c_ptr, c_char, c_bool, c_null_ptr, c_int
   implicit none
   private
 
@@ -14,7 +14,8 @@ module saydx_ciface
   public :: c_eventprinter_create, c_eventprinter_cast_to_eventhandler
   public :: c_msdparser_create, c_msdparser_parse_file, c_msdparser_destroy
   public :: c_node_dereference, c_node_get_name, c_node_has_parent
-  public :: c_query_create, c_query_destroy, c_query_get_child, c_query_get_child_data
+  public :: c_query_create, c_query_destroy, c_query_get_child, c_query_get_child_data,&
+      & c_query_get_child_data_i4, c_query_get_child_data_i4p
   public :: c_treebuilder_create, c_treebuilder_cast_to_eventhandler, c_treebuilder_transfer_tree
 
   interface
@@ -121,6 +122,32 @@ module saydx_ciface
       type(c_ptr), intent(out) :: data
       type(c_ptr) :: error
     end function c_query_get_child_data
+
+
+    function c_query_get_child_data_i4(query, node, name, child, data) result(error)&
+        & bind(C, name='query_get_child_data_i4')
+      import :: c_ptr, c_char, c_int
+      type(c_ptr), value :: query
+      type(c_ptr), value :: node
+      character(kind=c_char), intent(in) :: name
+      type(c_ptr), intent(out) :: child
+      integer(c_int), intent(out) :: data
+      type(c_ptr) :: error
+    end function c_query_get_child_data_i4
+
+
+    function c_query_get_child_data_i4p(query, node, name, child, rank, shape, data) result(error)&
+        & bind(C, name='query_get_child_data_i4p')
+      import :: c_ptr, c_char, c_int
+      type(c_ptr), value :: query
+      type(c_ptr), value :: node
+      character(kind=c_char), intent(in) :: name
+      type(c_ptr), intent(out) :: child
+      integer(c_int), intent(out) :: rank
+      type(c_ptr), intent(out) :: shape
+      type(c_ptr), intent(out) :: data
+      type(c_ptr) :: error
+    end function c_query_get_child_data_i4p
 
 
     function c_treebuilder_create() result(treebuilder) bind(C, name='treebuilder_create')

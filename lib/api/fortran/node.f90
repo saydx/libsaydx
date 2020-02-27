@@ -8,14 +8,14 @@ module saydx_node
   use saydx_ciface, only : c_node_dereference, c_node_get_name, c_node_has_parent
   use saydx_cinterop, only : c_ptr, c_null_ptr, c_associated, c_f_string_pointer
   use saydx_common, only : fatal_error
-  use saydx_commontypes, only : c_ptr_wrapper_t
+  use saydx_commontypes, only : c_ptr_movable_wrapper_t
   implicit none
   private
 
   public :: node_t
 
 
-  type, extends(c_ptr_wrapper_t) :: node_t
+  type, extends(c_ptr_movable_wrapper_t) :: node_t
   contains
     procedure :: get_name => node_get_name
     procedure :: has_parent => node_has_parent

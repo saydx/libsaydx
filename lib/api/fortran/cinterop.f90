@@ -9,7 +9,9 @@ module saydx_cinterop
   implicit none
   private
 
-  public :: c_bool, c_char, c_ptr, c_size_t, c_associated, c_null_ptr, c_null_char
+  public :: c_bool, c_char, c_ptr, c_size_t, c_int
+  public :: c_null_ptr, c_null_char
+  public :: c_associated, c_f_pointer
   public :: c_f_string_pointer, f_c_string
 
 
